@@ -3058,8 +3058,8 @@ function renderConfig(){
   </div></div>`:''}
   <div class="card"><div class="card-head"><h3>Vista previa del encabezado</h3></div><div style="padding:0;overflow:hidden;transform-origin:top left"><div id="header-preview" style="pointer-events:none">${buildHeader('pcli')}</div></div></div>
 
-  ${obraActiva ? (() => {
-    const rubros=[...new Set((obraActiva.items||[]).map(it=>it.rubro))];
+  ${obra ? (() => {
+    const rubros=[...new Set((obra.items||[]).map(it=>it.rubro))];
     if(!rubros.length) return '';
     return '<div class="card"><div class="card-head"><h3>Rubros de la obra activa</h3><span style="font-size:11px;color:var(--text2)">Editá el nombre de cualquier rubro — cambia en todos los ítems</span></div><div class="card-body"><div style="display:flex;flex-direction:column;gap:8px">'+
     rubros.map(r=>`<div style="display:flex;gap:8px;align-items:center">
