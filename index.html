@@ -1830,7 +1830,7 @@ async function sbGet(table, id){
   if(!USE_SUPABASE) return null;
   try{
     const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}&select=data`, {
-      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken()}
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}
     });
     const d = await r.json();
     return d?.[0]?.data || null;
@@ -1839,18 +1839,19 @@ async function sbGet(table, id){
 async function sbSet(table, id, data){
   if(!USE_SUPABASE) return;
   try{
-    await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
       method:'POST',
-      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken(),'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
       body: JSON.stringify({id, data, updated_at: new Date().toISOString()})
     });
-  }catch(e){}
+    if(!r.ok){ const err=await r.text(); console.error('sbSet error',table,id,r.status,err); }
+  }catch(e){ console.error('sbSet exception',table,id,e); }
 }
 async function sbList(table){
   if(!USE_SUPABASE) return null;
   try{
     const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=id,data`, {
-      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken()}
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}
     });
     return await r.json();
   }catch(e){ return null; }
