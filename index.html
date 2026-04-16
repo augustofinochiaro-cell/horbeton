@@ -2183,7 +2183,7 @@ function renderPCli(){
 
   let curR='';
   items.forEach((it,i)=>{
-    if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="12"><span contenteditable="true" style="outline:none;cursor:text" onblur="renameRubro(${i},this.textContent.trim())" title="Clic para editar">${it.rubro}</span></td></tr>`;}
+    if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="12"><span contenteditable="true" style="outline:none;cursor:text" data-rubro="${it.rubro}" onblur="renameRubroByName(this.dataset.rubro,this.textContent.trim());this.dataset.rubro=this.textContent.trim()" title="✎ Clic para editar">${it.rubro}</span></td></tr>`;}
     const ptMO=it.qty*(it.mo_u||0), ptMat=it.qty*(it.mat_u||0), ptV=it.qty*it.v_u;
     const iva=ptV*(it.iva_mat||0)/100;
     const pct=totV>0?(ptV/totV*100).toFixed(1)+'%':'—';
@@ -2240,7 +2240,7 @@ function renderPCos(){
   let curR='';
   const inpS='width:100%;min-width:70px;text-align:right;padding:3px 5px;font-size:12px;border:1px solid var(--border);border-radius:4px;background:var(--surface)';
   items.forEach((it,i)=>{
-    if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="13"><span contenteditable="true" style="outline:none;cursor:text" onblur="renameRubro(${i},this.textContent.trim())" title="Clic para editar">${it.rubro}</span></td></tr>`;}
+    if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="13"><span contenteditable="true" style="outline:none;cursor:text" data-rubro="${it.rubro}" onblur="renameRubroByName(this.dataset.rubro,this.textContent.trim());this.dataset.rubro=this.textContent.trim()" title="✎ Clic para editar">${it.rubro}</span></td></tr>`;}
     const ctMO=it.qty*(it.mo_u||0), ctMat=it.qty*(it.mat_u||0), ctT=ctMO+ctMat;
     const ivaMO=ctMO*(it.iva_mo||0)/100, ivaMat=ctMat*(it.iva_mat||0)/100, ivaT=ivaMO+ivaMat;
     const vtT=it.qty*it.v_u, mg=vtT-ctT, mgP=vtT>0?(mg/vtT*100).toFixed(1)+'%':'—';
@@ -2421,7 +2421,7 @@ function renderCert(){
     html+='<div class="card"><div class="tw"><table><thead><tr><th style="width:32%">Ítem</th><th>Un.</th><th class="r">Monto total</th><th class="r">Acum. ant.</th><th class="r" style="background:#fffbf0">% Mes</th><th class="r">% Acum.</th><th class="r">Monto mes</th><th class="r">Saldo</th></tr></thead><tbody>';
     let curR='';
     items.forEach(it=>{
-      if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="8">${it.rubro}</td></tr>`;}
+      if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="8"><span contenteditable="true" spellcheck="false" data-rubro="${it.rubro}" style="outline:none;cursor:text" onblur="renameRubroByName(this.dataset.rubro,this.textContent.trim());this.dataset.rubro=this.textContent.trim()">${it.rubro}</span></td></tr>`;}
       const vt=it.qty*it.v_u;
       const ant=getAcumAnt(obra,it.id,certIdx);
       const mes=cert.avances[it.id]||0;
@@ -2491,7 +2491,7 @@ function renderCert(){
     html+='</tr></thead><tbody>';
     let curR2='';
     items.forEach(it=>{
-      if(it.rubro!==curR2){curR2=it.rubro;html+=`<tr class="rubro-row"><td colspan="11">${it.rubro}</td></tr>`;}
+      if(it.rubro!==curR2){curR2=it.rubro;html+=`<tr class="rubro-row"><td colspan="11"><span contenteditable="true" spellcheck="false" data-rubro="${it.rubro}" style="outline:none;cursor:text" onblur="renameRubroByName(this.dataset.rubro,this.textContent.trim());this.dataset.rubro=this.textContent.trim()">${it.rubro}</span></td></tr>`;}
       const ant=getAcumAnt(obra,it.id,certIdx);
       const mesC=cert.avancesCosto?.[it.id]??(cert.avances[it.id]||0);
       const pct=Math.min(1,ant+mesC)-ant;
@@ -2580,7 +2580,7 @@ function renderHist(){
   let curR='';
   html+='<div class="card"><div class="card-head"><h3>Avance por ítem</h3></div><div class="tw"><table><thead><tr><th style="width:42%">Ítem</th><th>Un.</th><th class="r">Monto total</th><th class="r">% Acum.</th><th>Progreso</th></tr></thead><tbody>';
   items.forEach(it=>{
-    if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="5">${it.rubro}</td></tr>`;}
+    if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="5"><span contenteditable="true" spellcheck="false" data-rubro="${it.rubro}" style="outline:none;cursor:text" onblur="renameRubroByName(this.dataset.rubro,this.textContent.trim());this.dataset.rubro=this.textContent.trim()">${it.rubro}</span></td></tr>`;}
     let a=0; obra.certificados.forEach(c=>a+=(c.avances[it.id]||0)); a=Math.min(1,a);
     const w=Math.min(100,a*100).toFixed(0);
     html+=`<tr><td>${tipoBadge(it.tipo)}${it.desc}</td><td>${it.un}</td><td class="r">$${fmt(it.qty*it.v_u)}</td><td class="r">${fmtP(a)}</td><td><div style="display:flex;align-items:center;gap:6px"><div class="bar-w" style="flex:1;max-width:100px"><div class="bar-f${a>=1?' done':''}" style="width:${w}%"></div></div><span style="font-size:11px;color:var(--text2)">${fmtP(a)}</span></div></td></tr>`;
@@ -2593,9 +2593,14 @@ function renderHist(){
 function renameRubro(itemIdx, newName){
   const obra=getObra(); if(!obra||!newName) return;
   const oldName=obra.items[itemIdx].rubro;
-  if(oldName===newName) return;
-  // Rename all items with same rubro
+  renameRubroByName(oldName, newName);
+}
+function renameRubroByName(oldName, newName){
+  const obra=getObra(); if(!obra||!newName||!oldName) return;
+  newName=newName.trim();
+  if(!newName||oldName===newName) return;
   obra.items.forEach(it=>{ if(it.rubro===oldName) it.rubro=newName; });
+  (obra.gtasks||[]).forEach(t=>{ if(t.rubro===oldName) t.rubro=newName; });
   saveState(); render(curPage);
 }
 function inlineEditPcli(idx, field, val){
