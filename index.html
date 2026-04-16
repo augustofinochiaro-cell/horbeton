@@ -2595,6 +2595,12 @@ function renameRubro(itemIdx, newName){
   const oldName=obra.items[itemIdx].rubro;
   renameRubroByName(oldName, newName);
 }
+function renameRubroFromConfig(oldName, newName){
+  newName = newName.trim();
+  if(!newName || oldName === newName) return;
+  renameRubroByName(oldName, newName);
+  renderConfig(); // re-render config to show updated names
+}
 function renameRubroByName(oldName, newName){
   const obra=getObra(); if(!obra||!newName||!oldName) return;
   newName=newName.trim();
@@ -3051,6 +3057,18 @@ function renderConfig(){
     </div>
   </div></div>`:''}
   <div class="card"><div class="card-head"><h3>Vista previa del encabezado</h3></div><div style="padding:0;overflow:hidden;transform-origin:top left"><div id="header-preview" style="pointer-events:none">${buildHeader('pcli')}</div></div></div>
+
+  ${obraActiva ? (() => {
+    const rubros=[...new Set((obraActiva.items||[]).map(it=>it.rubro))];
+    if(!rubros.length) return '';
+    return '<div class="card"><div class="card-head"><h3>Rubros de la obra activa</h3><span style="font-size:11px;color:var(--text2)">Editá el nombre de cualquier rubro — cambia en todos los ítems</span></div><div class="card-body"><div style="display:flex;flex-direction:column;gap:8px">'+
+    rubros.map(r=>`<div style="display:flex;gap:8px;align-items:center">
+      <input type="text" value="${r}" id="rub_${r.replace(/[^a-z0-9]/gi,'_')}" style="flex:1;font-size:13px" onkeydown="if(event.key==='Enter')renameRubroFromConfig('${r.replace(/'/g,"\'")}',this.value)">
+      <button class="btn btn-gold btn-sm" onclick="renameRubroFromConfig('${r.replace(/'/g,"\'")}',document.getElementById('rub_${r.replace(/[^a-z0-9]/gi,'_')}').value)">Guardar</button>
+    </div>`).join('')+
+    '</div></div></div>';
+  })() : ''}
+
   </div>`;
 }
 function saveEmpresa(){
