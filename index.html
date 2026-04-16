@@ -181,7 +181,7 @@ input.inp-av{width:64px;text-align:right;background:#fffbf0;border-color:#e8c97a
 
 <!-- MODAL MOVIMIENTO -->
 <div class="modal-ov hide" id="modal-mov">
-<div class="modal" style="width:560px">
+<div class="modal" style="width:600px;max-height:90vh;overflow-y:auto">
   <h3 id="mm-title">Nuevo movimiento</h3>
   <div class="fsec">
     <div class="fsec-t">Tipo y fecha</div>
@@ -195,27 +195,57 @@ input.inp-av{width:64px;text-align:right;background:#fffbf0;border-color:#e8c97a
       <div class="fr"><label>Fecha</label><input type="date" id="mm-fecha"></div>
       <div class="fr"><label>Estado</label>
         <select id="mm-estado">
-          <option value="pagado">Pagado / cobrado</option>
-          <option value="pendiente">Pendiente</option>
+          <option value="Pagado/Cobrado">Pagado / Cobrado</option>
+          <option value="Pendiente">Pendiente</option>
         </select>
       </div>
     </div>
   </div>
   <div class="fsec">
     <div class="fsec-t">Detalle</div>
-    <div class="fr"><label>Concepto</label><input type="text" id="mm-concepto" placeholder="Ej: Cobro cert. 2 — Casa García"></div>
     <div class="f2">
-      <div class="fr"><label>Categoría</label><select id="mm-cat"></select></div>
-      <div class="fr"><label>Monto ($)</label><input type="number" id="mm-monto" min="0" step="1" placeholder="0"></div>
+      <div class="fr"><label>Concepto *</label><input type="text" id="mm-concepto" placeholder="Ej: Cobro cert. 2 — Casa García"></div>
+      <div class="fr"><label>Proveedor / Cliente</label><input type="text" id="mm-proveedor" placeholder="Nombre del proveedor o cliente"></div>
+    </div>
+    <div class="f3">
+      <div class="fr"><label>Categoría</label>
+        <input type="text" id="mm-cat" list="mm-cat-list" placeholder="Elegí o escribí una categoría" autocomplete="off">
+        <datalist id="mm-cat-list"></datalist>
+      </div>
+      <div class="fr"><label>Monto (neto) *</label><input type="number" id="mm-monto" min="0" step="1" placeholder="0" oninput="calcTotalMov()"></div>
+      <div class="fr"><label>Impuesto %</label>
+        <input type="text" id="mm-impuesto" list="mm-imp-list" placeholder="Ej: 21 (IVA)" autocomplete="off" oninput="calcTotalMov()" style="width:100%">
+        <datalist id="mm-imp-list">
+          <option value="21">IVA 21%</option>
+          <option value="10.5">IVA 10.5%</option>
+          <option value="27">IVA 27%</option>
+          <option value="0">Sin impuesto</option>
+        </datalist>
+      </div>
+      <div class="fr"><label>Comprobante N°</label><input type="text" id="mm-comprobante" placeholder="Ej: FAC-0001"></div>
     </div>
   </div>
   <div class="fsec">
-    <div class="fsec-t">Cuenta y obra</div>
-    <div class="f2">
-      <div class="fr"><label>Cuenta / caja</label><select id="mm-cuenta"></select></div>
-      <div class="fr"><label>Obra (opcional)</label><select id="mm-obra"></select></div>
+    <div class="fsec-t">Cuenta y pago</div>
+    <div class="f3">
+      <div class="fr"><label>Cuenta / Caja</label><select id="mm-cuenta"></select></div>
+      <div class="fr"><label>Forma de pago</label>
+        <input type="text" id="mm-forma" list="mm-forma-list" placeholder="Elegí o escribí" autocomplete="off">
+        <datalist id="mm-forma-list">
+          <option>Efectivo</option>
+          <option>Transferencia</option>
+          <option>Cheque</option>
+          <option>Otro</option>
+        </datalist>
+      </div>
+      <div class="fr"><label>Obra</label><select id="mm-obra"></select></div>
     </div>
-    <div class="fr"><label>Notas</label><textarea id="mm-notas" rows="2" placeholder="Observaciones..."></textarea></div>
+    <div id="mm-total-preview" style="display:none;padding:10px 12px;background:var(--surface2);border-radius:var(--r);font-size:13px;margin-bottom:6px">
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">Subtotal</span><span id="mm-t-sub">$0</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--amber)" id="mm-t-imp-label">IVA 21%</span><span id="mm-t-imp" style="color:var(--amber)">$0</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:700;border-top:1px solid var(--border);padding-top:6px;margin-top:6px"><span>Total</span><span id="mm-t-total">$0</span></div>
+    </div>
+    <div class="fr"><label>Notas</label><textarea id="mm-notas" rows="2" placeholder="Observaciones adicionales..."></textarea></div>
   </div>
   <div class="modal-act">
     <button class="btn" onclick="closeM('modal-mov')">Cancelar</button>
@@ -226,7 +256,7 @@ input.inp-av{width:64px;text-align:right;background:#fffbf0;border-color:#e8c97a
 
 <!-- MODAL CUENTA -->
 <div class="modal-ov hide" id="modal-cuenta">
-<div class="modal" style="width:400px">
+<div class="modal" style="width:420px">
   <h3 id="mc-title">Nueva cuenta</h3>
   <div class="fsec">
     <div class="fsec-t">Datos de la cuenta</div>
@@ -254,183 +284,6 @@ input.inp-av{width:64px;text-align:right;background:#fffbf0;border-color:#e8c97a
 </div>
 </div>
 
-<!-- LOGIN SCREEN -->
-<div id="login-screen" style="display:none!important;position:fixed;inset:0;background:#1c2b3a;z-index:9999;align-items:center;justify-content:center;flex-direction:column">
-  <div style="width:100%;max-width:380px;padding:24px">
-    <div style="text-align:center;margin-bottom:32px">
-      <div style="font-size:28px;font-weight:800;color:#fff;letter-spacing:0.5px">HORBETON</div>
-      <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px">Gestión de obras</div>
-    </div>
-    <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:28px">
-      <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:16px;text-transform:uppercase;letter-spacing:0.5px">Ingresar</div>
-      <div style="margin-bottom:12px">
-        <label style="font-size:11px;color:rgba(255,255,255,0.5);display:block;margin-bottom:5px">Email</label>
-        <input type="email" id="li-email" placeholder="tu@email.com" style="width:100%;padding:10px 12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:7px;color:#fff;font-size:13px" onkeydown="if(event.key==='Enter')doLogin()">
-      </div>
-      <div style="margin-bottom:20px">
-        <label style="font-size:11px;color:rgba(255,255,255,0.5);display:block;margin-bottom:5px">Contraseña</label>
-        <input type="password" id="li-pass" placeholder="••••••••" style="width:100%;padding:10px 12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:7px;color:#fff;font-size:13px" onkeydown="if(event.key==='Enter')doLogin()">
-      </div>
-      <button id="li-btn" onclick="doLogin()" style="width:100%;padding:11px;background:#b8965a;border:none;border-radius:7px;color:#fff;font-size:13px;font-weight:700;cursor:pointer">Ingresar</button>
-      <div id="login-msg" style="margin-top:10px;font-size:12px;color:#e74c3c;text-align:center;min-height:18px"></div>
-    </div>
-  </div>
-</div>
-
-
-<!-- MODAL USUARIO -->
-<div class="modal-ov hide" id="modal-usuario">
-<div class="modal" style="width:500px">
-  <h3>Nuevo usuario</h3>
-  <div class="fsec">
-    <div class="fsec-t">Datos del usuario</div>
-    <div class="f2">
-      <div class="fr"><label>Nombre completo</label><input type="text" id="mu-nombre" placeholder="Ej: María García"></div>
-      <div class="fr"><label>Email</label><input type="email" id="mu-email" placeholder="maria@empresa.com"></div>
-    </div>
-    <div class="f2">
-      <div class="fr"><label>Contraseña inicial</label><input type="password" id="mu-pass" placeholder="Mínimo 6 caracteres"></div>
-      <div class="fr"><label>Rol</label>
-        <select id="mu-role">
-          <option value="admin">Admin (edita todo)</option>
-          <option value="cliente">Cliente (solo lectura)</option>
-        </select>
-      </div>
-    </div>
-  </div>
-  <div class="fsec" id="mu-obras-sec">
-    <div class="fsec-t">Obras visibles (solo para clientes)</div>
-    <div id="mu-obras" style="max-height:180px;overflow-y:auto;padding:4px 0"></div>
-  </div>
-  <div id="mu-msg" style="font-size:12px;color:var(--red);margin-top:8px;min-height:18px"></div>
-  <div class="modal-act">
-    <button class="btn" onclick="closeM('modal-usuario')">Cancelar</button>
-    <button class="btn btn-gold" onclick="saveUsuario()">Crear usuario</button>
-  </div>
-</div>
-</div>
-
-
-<!-- MODAL OBRA -->
-<div class="modal-ov hide" id="modal-obra">
-<div class="modal">
-  <h3 id="mo-title">Nueva obra</h3>
-  <div class="fsec">
-    <div class="fsec-t">Datos generales</div>
-    <div class="f2">
-      <div class="fr"><label>Nombre de la obra</label><input type="text" id="fo-nombre" placeholder="Casa García"></div>
-      <div class="fr"><label>Cliente</label><input type="text" id="fo-cliente"></div>
-    </div>
-    <div class="f2">
-      <div class="fr"><label>Dirección</label><input type="text" id="fo-dir"></div>
-      <div class="fr"><label>Barrio</label><input type="text" id="fo-barrio"></div>
-    </div>
-    <div class="f2">
-      <div class="fr"><label>Localidad</label><input type="text" id="fo-loc"></div>
-      <div class="fr"><label>Provincia</label><input type="text" id="fo-prov"></div>
-    </div>
-    <div class="f3">
-      <div class="fr"><label>Fecha inicio</label><input type="date" id="fo-fecha"></div>
-      <div class="fr"><label>Plazo (meses)</label><input type="number" id="fo-plazo" value="12" min="1"></div>
-      <div class="fr"><label>Superficie (m²)</label><input type="number" id="fo-m2" value="0"></div>
-    </div>
-    <div class="fr"><label>Notas</label><textarea id="fo-notas" rows="2"></textarea></div>
-  </div>
-  <div class="modal-act">
-    <button class="btn" onclick="closeM('modal-obra')">Cancelar</button>
-    <button class="btn btn-gold" onclick="saveObra()">Guardar obra</button>
-  </div>
-</div>
-</div>
-
-<!-- MODAL ÍTEM -->
-<div class="modal-ov hide" id="modal-item">
-<div class="modal" style="width:600px">
-  <h3 id="mi-title">Agregar ítem</h3>
-  <div class="fsec">
-    <div class="fsec-t">Rubro y descripción</div>
-    <div class="f2">
-      <div class="fr">
-        <label>Rubro
-          <button type="button" onclick="addCustomRubro()" style="margin-left:7px;font-size:10px;padding:2px 6px;border:1px solid var(--gold);background:none;border-radius:4px;color:var(--gold);cursor:pointer">+ Nuevo</button>
-        </label>
-        <select id="fi-rubro" onchange="filterSubs()"><option value="">— Seleccionar —</option></select>
-      </div>
-      <div class="fr"><label>Subrubro / ítem</label>
-        <select id="fi-sub" onchange="onSubSel()"><option value="">— o escribir abajo —</option></select>
-      </div>
-    </div>
-    <div class="fr">
-      <label>Descripción <span style="font-weight:400;color:var(--text3)">— queda guardada globalmente al guardar</span></label>
-      <input type="text" id="fi-desc" list="fi-desc-list" autocomplete="off">
-      <datalist id="fi-desc-list"></datalist>
-    </div>
-    <div class="f3">
-      <div class="fr"><label>Unidad</label>
-        <select id="fi-un"><option>m2</option><option>m3</option><option>ml</option><option>kg</option><option>un</option><option>gl</option><option>tramos</option></select>
-      </div>
-      <div class="fr"><label>Cómputo (cantidad)</label>
-        <input type="number" id="fi-qty" value="1" min="0" step="0.01" oninput="recalcPU()">
-      </div>
-      <div class="fr"><label>Tipo de ítem</label>
-        <select id="fi-tipo">
-          <option value="original">Original</option>
-          <option value="adicional">Adicional</option>
-          <option value="ajuste">Ajuste de cómputo</option>
-        </select>
-      </div>
-    </div>
-  </div>
-  <div class="fsec">
-    <div class="fsec-t">Costos y precio al cliente</div>
-    <div class="f2">
-      <div class="fr"><label>CU Mano de obra ($)</label><input type="number" id="fi-mo" value="0" min="0" oninput="recalcPU()"></div>
-      <div class="fr"><label>CU Materiales ($)</label><input type="number" id="fi-mat" value="0" min="0" oninput="recalcPU()"></div>
-    </div>
-    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:11px 13px;margin-bottom:10px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <span style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px">Costo total unitario</span>
-        <span style="font-size:15px;font-weight:700" id="fi-costo">$0</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <label style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;white-space:nowrap">% Margen</label>
-        <input type="number" id="fi-margen" value="30" min="0" max="99" step="0.5" oninput="recalcPU()" style="width:68px;font-weight:600;border-color:var(--gold)">
-        <span style="font-size:11px;color:var(--text3)">sobre precio · PU = Costo ÷ (1 − margen)</span>
-      </div>
-    </div>
-    <div style="background:#f0faf4;border:1px solid #b7dfc8;border-radius:var(--r);padding:11px 13px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <span style="font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:0.4px">Precio unitario al cliente</span>
-        <span style="font-size:17px;font-weight:700;color:var(--green)" id="fi-pu-calc">$0</span>
-      </div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:5px">Ajustalo manualmente si necesitás:</div>
-      <input type="number" id="fi-vu" value="0" min="0" oninput="onPUManual()" style="width:100%;font-size:13px;border-color:#b7dfc8">
-    </div>
-  </div>
-  <div class="fsec">
-    <div class="fsec-t">Proveedores e IVA</div>
-    <div class="f2">
-      <div class="fr"><label>Proveedor MO / cuadrilla</label>
-        <input type="text" id="fi-prov-mo" list="fi-prov-mo-list" placeholder="Ej: Cuadrilla Martínez" autocomplete="off">
-        <datalist id="fi-prov-mo-list"></datalist>
-      </div>
-      <div class="fr"><label>Proveedor materiales</label>
-        <input type="text" id="fi-prov-mat" list="fi-prov-mat-list" placeholder="Ej: Corralón López" autocomplete="off">
-        <datalist id="fi-prov-mat-list"></datalist>
-      </div>
-    </div>
-    <div class="f2">
-      <div class="fr"><label>IVA en MO (%)</label><input type="number" id="fi-iva-mo" value="0" min="0" max="100" step="0.5"></div>
-      <div class="fr"><label>IVA en materiales (%)</label><input type="number" id="fi-iva-mat" value="21" min="0" max="100" step="0.5"></div>
-    </div>
-  </div>
-  <div class="modal-act">
-    <button class="btn" onclick="closeM('modal-item')">Cancelar</button>
-    <button class="btn" onclick="saveItem(true)">Guardar y agregar otro</button>
-    <button class="btn btn-gold" onclick="saveItem()">Guardar ítem</button>
-  </div>
-</div>
-</div>
 
 <!-- MODAL GANTT TAREA -->
 <div class="modal-ov hide" id="modal-gtask">
@@ -512,14 +365,14 @@ input.inp-av{width:64px;text-align:right;background:#fffbf0;border-color:#e8c97a
   <div class="sb-sec">Sistema</div>
   <button class="nav" onclick="go('config')" id="nav-config"><span class="nav-dot"></span>Configuración</button>
   <button class="nav" onclick="go('finanzas')" id="nav-finanzas"><span class="nav-dot"></span>Finanzas</button>
-  <button class="nav nav-admin-only" style="display:none" onclick="go('usuarios')" id="nav-usuarios"><span class="nav-dot"></span>Usuarios</button>
+  <button class="nav nav-admin-only" onclick="go('usuarios')" id="nav-usuarios"><span class="nav-dot"></span>Usuarios</button>
 </div>
 
 <div class="main">
 <div class="topbar no-print">
   <h2 id="tb-title">Para el cliente</h2>
   <div style="display:flex;gap:7px;align-items:center" id="tb-actions"></div>
-  <div style="display:flex;gap:7px;align-items:center;margin-left:12px" id="user-badge" style="display:none"></div>
+  <div style="display:flex;gap:7px;align-items:center;margin-left:12px" id="user-badge"></div>
 </div>
 <div class="content">
   <div class="page on" id="page-pcli"><div class="print-header" id="ph-pcli"></div><div id="pcli-content"></div></div>
@@ -1510,16 +1363,22 @@ async function confirmDeleteUser(id,nombre){
   renderUsuarios();
 }
 
-// ═══ FINANZAS ═════════════════════════════════════════════════════════════════
-// STATE.finanzas = { cuentas:[{id,nombre,tipo:'banco'|'efectivo',color}], movimientos:[{id,obraId,cuentaId,tipo,fecha,concepto,categoria,monto,estado,notas}] }
+// ═══ FINANZAS V2 ══════════════════════════════════════════════════════════════
 
-const CAT_INGRESO=['Certificado','Anticipo','Honorarios','Ajuste CAC','Devolución','Otro ingreso'];
-const CAT_EGRESO=['Proveedor materiales','Mano de obra','Honorarios profesionales','Impuestos','Gastos generales','Sueldos','Servicios','Alquiler','Otro egreso'];
+const FIN_ESTADOS = ['Pendiente','Pagado/Cobrado'];
+const FIN_FORMAS_PAGO = ['Efectivo','Transferencia','Cheque','Otro'];
+const FIN_CATS_ING = ['Certificado','Anticipo','Honorarios','Ajuste CAC','Devolución','Otro ingreso'];
+const FIN_CATS_EGR = ['Mano de obra','Materiales','Honorarios prof.','Impuestos','Gastos generales','Sueldos','Servicios','Otro egreso'];
 
 function finInit(){
-  if(!STATE.finanzas) STATE.finanzas={cuentas:[{id:'efe',nombre:'Caja efectivo',tipo:'efectivo',color:'#2d6a4f',moneda:'ARS'},{id:'ban1',nombre:'Cuenta bancaria',tipo:'banco',color:'#1e3a5f',moneda:'ARS'}],movimientos:[]};
-  if(!STATE.finanzas.cuentas) STATE.finanzas.cuentas=[{id:'efe',nombre:'Caja efectivo',tipo:'efectivo',color:'#2d6a4f',moneda:'ARS'},{id:'ban1',nombre:'Cuenta bancaria',tipo:'banco',color:'#1e3a5f',moneda:'ARS'}];
+  if(!STATE.finanzas) STATE.finanzas={cuentas:[],movimientos:[]};
+  if(!STATE.finanzas.cuentas) STATE.finanzas.cuentas=[];
   if(!STATE.finanzas.movimientos) STATE.finanzas.movimientos=[];
+  // Ensure default cuentas exist
+  const ids=STATE.finanzas.cuentas.map(c=>c.id);
+  if(!ids.includes('caja_ars')) STATE.finanzas.cuentas.unshift({id:'caja_ars',nombre:'Caja pesos',tipo:'efectivo',moneda:'ARS',color:'#2d6a4f'});
+  if(!ids.includes('caja_usd')) STATE.finanzas.cuentas.splice(1,0,{id:'caja_usd',nombre:'Caja USD',tipo:'efectivo',moneda:'USD',color:'#b8965a'});
+  if(!ids.includes('banco_ars')) STATE.finanzas.cuentas.splice(2,0,{id:'banco_ars',nombre:'Cuenta banco',tipo:'banco',moneda:'ARS',color:'#1e3a5f'});
 }
 
 function renderFinanzas(){
@@ -1528,24 +1387,18 @@ function renderFinanzas(){
   const fin=STATE.finanzas;
   const movs=fin.movimientos||[];
   const cuentas=fin.cuentas||[];
-  const obraActiva=getObra();
   const finView=window._finView||'resumen';
   window._finView=finView;
-  const finObraFiltro=window._finObraFiltro||'todas';
 
-  // Calculate saldos per cuenta
+  // Saldos por cuenta
   const saldos={};
-  cuentas.forEach(c=>{ saldos[c.id]={ingresos:0,egresos:0}; });
+  cuentas.forEach(c=>{ saldos[c.id]={ing:0,egr:0}; });
   movs.forEach(m=>{
-    if(!saldos[m.cuentaId]) saldos[m.cuentaId]={ingresos:0,egresos:0};
-    if(m.tipo==='ingreso') saldos[m.cuentaId].ingresos+=m.monto||0;
-    else saldos[m.cuentaId].egresos+=m.monto||0;
+    if(!saldos[m.cuentaId]) saldos[m.cuentaId]={ing:0,egr:0};
+    if(m.tipo==='ingreso') saldos[m.cuentaId].ing+=m.monto||0;
+    else saldos[m.cuentaId].egr+=m.monto||0;
   });
-  const totIng=movs.filter(m=>m.tipo==='ingreso').reduce((s,m)=>s+(m.monto||0),0);
-  const totEgr=movs.filter(m=>m.tipo==='egreso').reduce((s,m)=>s+(m.monto||0),0);
-  const totSaldo=totIng-totEgr;
 
-  // View selector + actions
   let html=`<div class="no-print" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
     <button class="btn ${finView==='resumen'?'btn-gold':''}" onclick="window._finView='resumen';renderFinanzas()">Resumen</button>
     <button class="btn ${finView==='movimientos'?'btn-gold':''}" onclick="window._finView='movimientos';renderFinanzas()">Movimientos</button>
@@ -1554,115 +1407,148 @@ function renderFinanzas(){
   </div>`;
 
   if(finView==='resumen'){
-    // Saldo cards per cuenta
-    html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:14px">`;
+    // Tarjetas por cuenta
+    html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px">`;
     cuentas.forEach(c=>{
-      const s=saldos[c.id]||{ingresos:0,egresos:0};
-      const saldo=s.ingresos-s.egresos;
-      const simbol=c.moneda==='USD'?'U$S':'$';
+      const s=saldos[c.id]||{ing:0,egr:0};
+      const saldo=s.ing-s.egr;
+      const sym=c.moneda==='USD'?'U$S':'$';
       html+=`<div style="background:${c.color};border-radius:var(--rl);padding:16px 18px;color:#fff">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-          <div style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.8px">${c.nombre}</div>
-          <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,0.2);font-weight:700">${c.moneda||'ARS'}</span>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <div style="font-size:11px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.8px;flex:1">${c.nombre}</div>
+          <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,0.2);font-weight:700">${c.moneda}</span>
         </div>
-        <div style="font-size:24px;font-weight:800;line-height:1">${simbol}${fmt(saldo)}</div>
+        <div style="font-size:26px;font-weight:800;line-height:1;color:${saldo>=0?'#fff':'#ff8080'}">${sym}${fmt(Math.abs(saldo))}${saldo<0?' (neg)':''}</div>
         <div style="display:flex;gap:12px;margin-top:8px;font-size:11px;color:rgba(255,255,255,0.6)">
-          <span>↑ ${simbol}${fmt(s.ingresos)}</span><span>↓ ${simbol}${fmt(s.egresos)}</span>
+          <span>↑ ${sym}${fmt(s.ing)}</span><span>↓ ${sym}${fmt(s.egr)}</span>
         </div>
       </div>`;
     });
-    // Totals by currency
-    const totARS={ing:0,egr:0}; const totUSD={ing:0,egr:0};
-    movs.forEach(m=>{ const c=cuentas.find(c=>c.id===m.cuentaId); const isUSD=c?.moneda==='USD'; if(m.tipo==='ingreso'){if(isUSD)totUSD.ing+=m.monto||0;else totARS.ing+=m.monto||0;}else{if(isUSD)totUSD.egr+=m.monto||0;else totARS.egr+=m.monto||0;} });
-    html+=`<div style="background:var(--accent);border-radius:var(--rl);padding:16px 18px;color:#fff">
-      <div style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Totales</div>
-      <div style="margin-bottom:6px"><div style="font-size:10px;color:rgba(255,255,255,0.5)">ARS</div><div style="font-size:20px;font-weight:800;color:${totARS.ing-totARS.egr>=0?'#fff':'#ff8080'}">$${fmt(totARS.ing-totARS.egr)}</div><div style="font-size:11px;color:rgba(255,255,255,0.5)">↑$${fmt(totARS.ing)} ↓$${fmt(totARS.egr)}</div></div>
-      ${totUSD.ing||totUSD.egr?`<div style="border-top:1px solid rgba(255,255,255,0.2);padding-top:6px;margin-top:4px"><div style="font-size:10px;color:rgba(255,255,255,0.5)">USD</div><div style="font-size:20px;font-weight:800;color:${totUSD.ing-totUSD.egr>=0?'#fff':'#ff8080'}">U$S${fmt(totUSD.ing-totUSD.egr)}</div><div style="font-size:11px;color:rgba(255,255,255,0.5)">↑U$S${fmt(totUSD.ing)} ↓U$S${fmt(totUSD.egr)}</div></div>`:''}
-    </div></div>`;
+    html+=`</div>`;
 
-    // Per obra summary
-    const obraMovs={};
-    movs.forEach(m=>{ const k=m.obraId||'__global__'; if(!obraMovs[k]) obraMovs[k]={ing:0,egr:0}; if(m.tipo==='ingreso') obraMovs[k].ing+=m.monto||0; else obraMovs[k].egr+=m.monto||0; });
-    if(Object.keys(obraMovs).length){
-      html+=`<div class="card"><div class="card-head"><h3>Por obra</h3></div><div class="tw"><table><thead><tr><th>Obra</th><th class="r">Ingresos</th><th class="r">Egresos</th><th class="r">Saldo</th></tr></thead><tbody>`;
-      Object.entries(obraMovs).forEach(([obraId,d])=>{
-        const obraN=obraId==='__global__'?'Sin obra (gastos generales)':(STATE.obras.find(o=>o.id===obraId)?.nombre||obraId);
-        html+=`<tr><td style="font-weight:500">${obraN}</td><td class="r" style="color:var(--green)">$${fmt(d.ing)}</td><td class="r" style="color:var(--red)">$${fmt(d.egr)}</td><td class="r" style="font-weight:600;color:${d.ing-d.egr>=0?'var(--green)':'var(--red)'}">$${fmt(d.ing-d.egr)}</td></tr>`;
+    // Pendientes destacados
+    const pendientes=movs.filter(m=>m.estado==='Pendiente');
+    if(pendientes.length){
+      const pIng=pendientes.filter(m=>m.tipo==='ingreso').reduce((s,m)=>s+(m.monto||0),0);
+      const pEgr=pendientes.filter(m=>m.tipo==='egreso').reduce((s,m)=>s+(m.monto||0),0);
+      html+=`<div style="background:var(--amber2);border:1px solid #e8c97a;border-radius:var(--rl);padding:12px 16px;margin-bottom:14px;display:flex;gap:20px;flex-wrap:wrap">
+        <div style="font-size:11px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:0.5px;flex:100%">⏳ Movimientos pendientes</div>
+        <div><div style="font-size:11px;color:var(--text2)">A cobrar</div><div style="font-size:18px;font-weight:700;color:var(--green)">$${fmt(pIng)}</div></div>
+        <div><div style="font-size:11px;color:var(--text2)">A pagar</div><div style="font-size:18px;font-weight:700;color:var(--red)">$${fmt(pEgr)}</div></div>
+      </div>`;
+    }
+
+    // Resumen por obra
+    const obraMap={};
+    movs.forEach(m=>{
+      const k=m.obraId||'__general__';
+      if(!obraMap[k]) obraMap[k]={ing:0,egr:0};
+      if(m.tipo==='ingreso') obraMap[k].ing+=m.monto||0;
+      else obraMap[k].egr+=m.monto||0;
+    });
+    if(Object.keys(obraMap).length){
+      html+=`<div class="card"><div class="card-head"><h3>Por obra</h3></div><div class="tw"><table><thead><tr>
+        <th>Obra</th><th class="r">Ingresos</th><th class="r">Egresos</th><th class="r">Saldo</th>
+      </tr></thead><tbody>`;
+      Object.entries(obraMap).sort((a,b)=>b[1].ing-a[1].ing).forEach(([obraId,d])=>{
+        const obraN=obraId==='__general__'?'Sin obra (gastos generales)':(STATE.obras.find(o=>o.id===obraId)?.nombre||obraId);
+        const saldo=d.ing-d.egr;
+        html+=`<tr><td style="font-weight:500">${obraN}</td>
+          <td class="r" style="color:var(--green)">$${fmt(d.ing)}</td>
+          <td class="r" style="color:var(--red)">$${fmt(d.egr)}</td>
+          <td class="r" style="font-weight:700;color:${saldo>=0?'var(--green)':'var(--red)'}">$${fmt(saldo)}</td></tr>`;
       });
       html+=`</tbody></table></div></div>`;
     }
 
-    // Recent movements
-    const recent=[...movs].sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,8);
-    if(recent.length){
-      html+=`<div class="card"><div class="card-head"><h3>Últimos movimientos</h3></div><div class="tw"><table><thead><tr><th>Fecha</th><th>Concepto</th><th>Cuenta</th><th>Obra</th><th class="r">Monto</th><th>Estado</th></tr></thead><tbody>`;
-      recent.forEach(m=>{
-        const cuenta=cuentas.find(c=>c.id===m.cuentaId);
+    // Últimos movimientos
+    const recientes=[...movs].sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,10);
+    if(recientes.length){
+      html+=`<div class="card" style="margin-top:12px"><div class="card-head"><h3>Últimos movimientos</h3></div><div class="tw"><table><thead><tr>
+        <th>Fecha</th><th>Concepto</th><th>Cuenta</th><th>Obra</th><th class="r">Monto</th><th>Estado</th>
+      </tr></thead><tbody>`;
+      recientes.forEach(m=>{
+        const c=cuentas.find(c=>c.id===m.cuentaId);
+        const sym=c?.moneda==='USD'?'U$S':'$';
         const obraN=m.obraId?(STATE.obras.find(o=>o.id===m.obraId)?.nombre||'—'):'General';
-        html+=`<tr><td style="color:var(--text2)">${fmtD(m.fecha)}</td><td>${m.concepto}</td>
-          <td><span style="font-size:10px;padding:2px 6px;border-radius:3px;background:${cuenta?.color||'#888'};color:#fff">${cuenta?.nombre||'—'}</span></td>
+        html+=`<tr>
+          <td style="color:var(--text2);white-space:nowrap">${fmtD(m.fecha)}</td>
+          <td><div style="font-weight:500">${m.concepto}</div>${m.proveedor?`<div style="font-size:10px;color:var(--text3)">${m.proveedor}</div>`:''}</td>
+          <td><span style="font-size:10px;padding:2px 6px;border-radius:3px;background:${c?.color||'#888'};color:#fff;white-space:nowrap">${c?.nombre||'—'}</span></td>
           <td style="font-size:11px;color:var(--text2)">${obraN}</td>
-          <td class="r" style="font-weight:600;color:${m.tipo==='ingreso'?'var(--green)':'var(--red)'}">${m.tipo==='ingreso'?'+':'-'}$${fmt(m.monto)}</td>
-          <td><span class="tag ${m.estado==='pagado'?'tg':'ta'}">${m.estado}</span></td></tr>`;
+          <td class="r" style="font-weight:700;color:${m.tipo==='ingreso'?'var(--green)':'var(--red)'}">
+            ${m.tipo==='ingreso'?'+':'-'}${sym}${fmt(m.monto)}
+            ${m.impuestoPct?`<div style="font-size:9px;color:var(--amber)">+${m.impuestoPct}% imp.</div>`:''}
+          </td>
+          <td><span class="tag ${m.estado==='Pagado/Cobrado'?'tg':'ta'}">${m.estado}</span></td>
+        </tr>`;
       });
       html+=`</tbody></table></div></div>`;
     }
 
   } else if(finView==='movimientos'){
-    // Filters
-    const obras=[{id:'todas',nombre:'Todas las obras'},...STATE.obras,{id:'__global__',nombre:'Sin obra (general)'}];
-    html+=`<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:flex-end" class="no-print">
+    // Filtros
+    const obras=[{id:'',nombre:'Todas las obras'},...STATE.obras,{id:'__general__',nombre:'Sin obra (general)'}];
+    const _of=window._finObraF||''; const _tf=window._finTipoF||''; const _cf=window._finCuentaF||''; const _ef=window._finEstadoF||'';
+    html+=`<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px" class="no-print">
       <div><label style="font-size:11px;color:var(--text2);display:block;margin-bottom:3px">Obra</label>
-        <select onchange="window._finObraFiltro=this.value;renderFinanzas()" style="font-size:12px">
-          ${obras.map(o=>`<option value="${o.id}"${o.id===finObraFiltro?' selected':''}>${o.nombre}</option>`).join('')}
-        </select>
-      </div>
+        <select onchange="window._finObraF=this.value;renderFinanzas()" style="font-size:12px">
+          ${obras.map(o=>`<option value="${o.id}"${o.id===_of?' selected':''}>${o.nombre}</option>`).join('')}
+        </select></div>
       <div><label style="font-size:11px;color:var(--text2);display:block;margin-bottom:3px">Tipo</label>
-        <select onchange="window._finTipoFiltro=this.value;renderFinanzas()" style="font-size:12px">
-          <option value="">Todos</option><option value="ingreso">Ingresos</option><option value="egreso">Egresos</option>
-        </select>
-      </div>
+        <select onchange="window._finTipoF=this.value;renderFinanzas()" style="font-size:12px">
+          <option value=""${!_tf?' selected':''}>Todos</option>
+          <option value="ingreso"${_tf==='ingreso'?' selected':''}>Ingresos</option>
+          <option value="egreso"${_tf==='egreso'?' selected':''}>Egresos</option>
+        </select></div>
       <div><label style="font-size:11px;color:var(--text2);display:block;margin-bottom:3px">Cuenta</label>
-        <select onchange="window._finCuentaFiltro=this.value;renderFinanzas()" style="font-size:12px">
-          <option value="">Todas</option>${cuentas.map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('')}
-        </select>
-      </div>
+        <select onchange="window._finCuentaF=this.value;renderFinanzas()" style="font-size:12px">
+          <option value="">Todas</option>${cuentas.map(c=>`<option value="${c.id}"${c.id===_cf?' selected':''}>${c.nombre}</option>`).join('')}
+        </select></div>
+      <div><label style="font-size:11px;color:var(--text2);display:block;margin-bottom:3px">Estado</label>
+        <select onchange="window._finEstadoF=this.value;renderFinanzas()" style="font-size:12px">
+          <option value="">Todos</option>${FIN_ESTADOS.map(e=>`<option value="${e}"${e===_ef?' selected':''}>${e}</option>`).join('')}
+        </select></div>
     </div>`;
 
-    // Filter movimientos
     let filtered=[...movs].sort((a,b)=>b.fecha.localeCompare(a.fecha));
-    if(finObraFiltro&&finObraFiltro!=='todas') filtered=filtered.filter(m=>(finObraFiltro==='__global__'?!m.obraId:m.obraId===finObraFiltro));
-    if(window._finTipoFiltro) filtered=filtered.filter(m=>m.tipo===window._finTipoFiltro);
-    if(window._finCuentaFiltro) filtered=filtered.filter(m=>m.cuentaId===window._finCuentaFiltro);
+    if(_of) filtered=filtered.filter(m=>_of==='__general__'?!m.obraId:m.obraId===_of);
+    if(_tf) filtered=filtered.filter(m=>m.tipo===_tf);
+    if(_cf) filtered=filtered.filter(m=>m.cuentaId===_cf);
+    if(_ef) filtered=filtered.filter(m=>m.estado===_ef);
 
-    const fIngr=filtered.filter(m=>m.tipo==='ingreso').reduce((s,m)=>s+(m.monto||0),0);
+    const fIng=filtered.filter(m=>m.tipo==='ingreso').reduce((s,m)=>s+(m.monto||0),0);
     const fEgr=filtered.filter(m=>m.tipo==='egreso').reduce((s,m)=>s+(m.monto||0),0);
-
     html+=`<div class="metrics" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px">
-      <div class="met"><div class="met-l">Ingresos</div><div class="met-v g">$${fmt(fIngr)}</div></div>
+      <div class="met"><div class="met-l">Ingresos</div><div class="met-v g">$${fmt(fIng)}</div></div>
       <div class="met"><div class="met-l">Egresos</div><div class="met-v" style="color:var(--red)">$${fmt(fEgr)}</div></div>
-      <div class="met"><div class="met-l">Saldo</div><div class="met-v ${fIngr-fEgr>=0?'g':'r'}">$${fmt(fIngr-fEgr)}</div></div>
+      <div class="met"><div class="met-l">Saldo</div><div class="met-v ${fIng-fEgr>=0?'g':'r'}">$${fmt(fIng-fEgr)}</div></div>
     </div>`;
 
-    if(!filtered.length){ html+='<div class="card"><div class="card-body">'+empty('Sin movimientos para los filtros seleccionados.')+'</div></div>'; }
-    else {
+    if(!filtered.length){
+      html+='<div class="card"><div class="card-body">'+empty('Sin movimientos para los filtros seleccionados.')+'</div></div>';
+    } else {
       html+=`<div class="card"><div class="tw"><table><thead><tr>
-        <th>Fecha</th><th style="width:24%">Concepto</th><th>Categoría</th><th>Cuenta</th><th>Obra</th>
+        <th>Fecha</th><th style="width:20%">Concepto</th><th>Proveedor</th><th>Categoría</th>
+        <th>Cuenta</th><th>Forma pago</th><th>Obra</th><th>Comp.N°</th>
         <th class="r">Monto</th><th>Estado</th><th class="no-print"></th>
       </tr></thead><tbody>`;
       filtered.forEach(m=>{
-        const cuenta=cuentas.find(c=>c.id===m.cuentaId);
+        const c=cuentas.find(c=>c.id===m.cuentaId);
+        const sym=c?.moneda==='USD'?'U$S':'$';
         const obraN=m.obraId?(STATE.obras.find(o=>o.id===m.obraId)?.nombre||'—'):'General';
         html+=`<tr>
-          <td style="color:var(--text2);white-space:nowrap">${fmtD(m.fecha)}</td>
-          <td style="font-weight:500">${m.concepto}${m.notas?`<div style="font-size:10px;color:var(--text3)">${m.notas}</div>`:''}</td>
-          <td style="font-size:11px;color:var(--text2)">${m.categoria}</td>
-          <td><span style="font-size:10px;padding:2px 6px;border-radius:3px;background:${cuenta?.color||'#888'};color:#fff;white-space:nowrap">${cuenta?.nombre||'—'}</span></td>
+          <td style="white-space:nowrap;color:var(--text2)">${fmtD(m.fecha)}</td>
+          <td><div style="font-weight:500">${m.concepto}</div>${m.notas?`<div style="font-size:10px;color:var(--text3)">${m.notas}</div>`:''}</td>
+          <td style="font-size:11px">${m.proveedor||'—'}</td>
+          <td style="font-size:11px;color:var(--text2)">${m.categoria||'—'}</td>
+          <td><span style="font-size:10px;padding:2px 6px;border-radius:3px;background:${c?.color||'#888'};color:#fff;white-space:nowrap">${c?.nombre||'—'}</span></td>
+          <td style="font-size:11px;color:var(--text2)">${m.formaPago||'—'}</td>
           <td style="font-size:11px;color:var(--text2)">${obraN}</td>
+          <td style="font-size:11px;color:var(--text3)">${m.comprobante||'—'}</td>
           <td class="r" style="font-weight:700;color:${m.tipo==='ingreso'?'var(--green)':'var(--red)'}">
-            ${m.tipo==='ingreso'?'+':'-'}${(cuentas.find(c=>c.id===m.cuentaId)?.moneda==='USD'?'U$S':'$')}${fmt(m.monto)}
-          </td>
-          <td><span class="tag ${m.estado==='pagado'?'tg':'ta'}" style="cursor:pointer" onclick="toggleEstadoMov('${m.id}')">${m.estado}</span></td>
+            ${m.tipo==='ingreso'?'+':'-'}${sym}${fmt(m.monto)}</td>
+          <td><span class="tag ${m.estado==='Pagado/Cobrado'?'tg':'ta'}" style="cursor:pointer;white-space:nowrap" onclick="toggleEstadoMov('${m.id}')">${m.estado}</span></td>
           <td class="no-print" style="white-space:nowrap">
             <button class="btn btn-sm" onclick="editMov('${m.id}')">✎</button>
             <button class="btn btn-sm btn-danger" onclick="deleteMov('${m.id}')">×</button>
@@ -1674,27 +1560,27 @@ function renderFinanzas(){
 
   } else if(finView==='cuentas'){
     html+=`<div class="card"><div class="card-head"><h3>Cuentas y cajas</h3><button class="btn btn-gold" onclick="openModalCuenta()">+ Nueva cuenta</button></div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;padding:16px">`;
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;padding:16px">`;
     cuentas.forEach(c=>{
-      const s=saldos[c.id]||{ingresos:0,egresos:0};
-      const saldo=s.ingresos-s.egresos;
-      html+=`<div style="border:1px solid var(--border);border-radius:var(--rl);padding:16px;position:relative">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-          <div style="width:12px;height:12px;border-radius:50%;background:${c.color}"></div>
-          <div style="font-weight:600">${c.nombre}</div>
-          <div style="margin-left:auto;display:flex;gap:4px">
-            <button class="btn btn-sm" onclick="editCuenta('${c.id}')">✎</button>
-            ${c.id!=='efe'?`<button class="btn btn-sm btn-danger" onclick="deleteCuenta('${c.id}')">×</button>`:''}
-          </div>
+      const s=saldos[c.id]||{ing:0,egr:0};
+      const saldo=s.ing-s.egr;
+      const sym=c.moneda==='USD'?'U$S':'$';
+      const fija=['caja_ars','caja_usd','banco_ars'].includes(c.id);
+      html+=`<div style="border:2px solid ${c.color};border-radius:var(--rl);padding:16px;position:relative">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div style="width:10px;height:10px;border-radius:50%;background:${c.color}"></div>
+          <div style="font-weight:600;flex:1">${c.nombre}</div>
+          <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:${c.moneda==='USD'?'#b8965a':'var(--surface2)'};color:${c.moneda==='USD'?'#fff':'var(--text2)'};font-weight:700">${c.moneda}</span>
+          <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:var(--surface2);color:var(--text2)">${c.tipo==='banco'?'Banco':'Efectivo'}</span>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-          <span style="font-size:10px;padding:2px 7px;border-radius:3px;background:var(--surface2);color:var(--text2);font-weight:600">${c.tipo==='efectivo'?'Efectivo':'Banco'}</span>
-          <span style="font-size:10px;padding:2px 7px;border-radius:3px;background:${c.moneda==='USD'?'#b8965a':'var(--surface2)'};color:${c.moneda==='USD'?'#fff':'var(--text2)'};font-weight:600">${c.moneda||'ARS'}</span>
+        <div style="font-size:24px;font-weight:800;color:${saldo>=0?'var(--green)':'var(--red)'};margin-bottom:6px">${sym}${fmt(Math.abs(saldo))}${saldo<0?' (neg)':''}</div>
+        <div style="font-size:11px;color:var(--text2);display:flex;gap:12px">
+          <span style="color:var(--green)">↑ ${sym}${fmt(s.ing)}</span>
+          <span style="color:var(--red)">↓ ${sym}${fmt(s.egr)}</span>
         </div>
-        <div style="font-size:22px;font-weight:800;color:${saldo>=0?'var(--green)':'var(--red)'}">$${fmt(saldo)}</div>
-        <div style="display:flex;gap:16px;margin-top:8px;font-size:11px;color:var(--text2)">
-          <span style="color:var(--green)">↑ Ingresos ${(c.moneda==='USD'?'U$S':'$')}${fmt(s.ingresos)}</span>
-          <span style="color:var(--red)">↓ Egresos ${(c.moneda==='USD'?'U$S':'$')}${fmt(s.egresos)}</span>
+        <div style="display:flex;gap:6px;margin-top:10px">
+          <button class="btn btn-sm" onclick="editCuenta('${c.id}')">✎ Editar</button>
+          ${!fija?`<button class="btn btn-sm btn-danger" onclick="deleteCuenta('${c.id}')">× Eliminar</button>`:''}
         </div>
       </div>`;
     });
@@ -1704,36 +1590,55 @@ function renderFinanzas(){
   el.innerHTML=html;
 }
 
-// ─── Modal movimiento ──────────────────────────────────────────────────────
+// ─── Modal movimiento ─────────────────────────────────────────────────────────
+function calcTotalMov(){
+  const monto=parseFloat(document.getElementById('mm-monto')?.value)||0;
+  const imp=parseFloat(document.getElementById('mm-impuesto')?.value)||0;
+  const impMonto=monto*imp/100;
+  const total=monto+impMonto;
+  const preview=document.getElementById('mm-total-preview');
+  if(!preview) return;
+  if(imp>0){
+    preview.style.display='block';
+    document.getElementById('mm-t-sub').textContent='$'+fmt(monto);
+    document.getElementById('mm-t-imp-label').textContent='Impuesto '+imp+'%';
+    document.getElementById('mm-t-imp').textContent='+$'+fmt(impMonto);
+    document.getElementById('mm-t-total').textContent='$'+fmt(total);
+  } else {
+    preview.style.display='none';
+  }
+}
 function openModalMov(editId){
   finInit();
-  const m=document.getElementById('modal-mov');
   const fin=STATE.finanzas;
-  const obras=STATE.obras||[];
-  // Populate cuenta select
-  document.getElementById('mm-cuenta').innerHTML=fin.cuentas.map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('');
-  // Populate obra select
-  document.getElementById('mm-obra').innerHTML='<option value="">— Sin obra (gasto/ingreso general) —</option>'+obras.map(o=>`<option value="${o.id}">${o.nombre}</option>`).join('');
-  // Populate categoria based on tipo
+  document.getElementById('mm-cuenta').innerHTML=fin.cuentas.map(c=>`<option value="${c.id}">${c.nombre} (${c.moneda})</option>`).join('');
+  document.getElementById('mm-obra').innerHTML='<option value="">— Sin obra —</option>'+(STATE.obras||[]).map(o=>`<option value="${o.id}">${o.nombre}</option>`).join('');
+
   function updateCats(){
     const tipo=document.getElementById('mm-tipo').value;
-    const cats=tipo==='ingreso'?CAT_INGRESO:CAT_EGRESO;
-    document.getElementById('mm-cat').innerHTML=cats.map(c=>`<option>${c}</option>`).join('');
+    const cats=tipo==='ingreso'?FIN_CATS_ING:FIN_CATS_EGR;
+    document.getElementById('mm-cat-list').innerHTML=cats.map(c=>`<option value="${c}">`).join('');
+    if(!document.getElementById('mm-cat').value) document.getElementById('mm-cat').value='';
   }
   document.getElementById('mm-tipo').onchange=updateCats;
 
+  const m=document.getElementById('modal-mov');
   if(editId){
     const mov=fin.movimientos.find(mv=>mv.id===editId);
     if(!mov) return;
     document.getElementById('mm-tipo').value=mov.tipo;
     updateCats();
     document.getElementById('mm-fecha').value=mov.fecha;
-    document.getElementById('mm-concepto').value=mov.concepto;
-    document.getElementById('mm-cat').value=mov.categoria;
-    document.getElementById('mm-cuenta').value=mov.cuentaId;
+    document.getElementById('mm-impuesto').value=mov.impuestoPct||0;
+    document.getElementById('mm-concepto').value=mov.concepto||'';
+    document.getElementById('mm-proveedor').value=mov.proveedor||'';
+    document.getElementById('mm-cat').value=mov.categoria||''; document.getElementById('mm-cat-list').innerHTML=(mov.tipo==='ingreso'?FIN_CATS_ING:FIN_CATS_EGR).map(c=>`<option value="${c}">`).join('');
+    document.getElementById('mm-monto').value=mov.monto||'';
+    document.getElementById('mm-cuenta').value=mov.cuentaId||'';
+    document.getElementById('mm-forma').value=mov.formaPago||'Efectivo';
     document.getElementById('mm-obra').value=mov.obraId||'';
-    document.getElementById('mm-monto').value=mov.monto;
-    document.getElementById('mm-estado').value=mov.estado||'pagado';
+    document.getElementById('mm-comprobante').value=mov.comprobante||'';
+    document.getElementById('mm-estado').value=mov.estado||'Pagado/Cobrado';
     document.getElementById('mm-notas').value=mov.notas||'';
     m._editId=editId;
     document.getElementById('mm-title').textContent='Editar movimiento';
@@ -1741,17 +1646,22 @@ function openModalMov(editId){
     document.getElementById('mm-tipo').value='ingreso';
     updateCats();
     document.getElementById('mm-fecha').value=new Date().toISOString().slice(0,10);
+    document.getElementById('mm-impuesto').value=''
     document.getElementById('mm-concepto').value='';
-    document.getElementById('mm-obra').value=getObra()?.id||'';
+    document.getElementById('mm-proveedor').value='';
     document.getElementById('mm-monto').value='';
-    document.getElementById('mm-estado').value='pagado';
+    document.getElementById('mm-comprobante').value='';
+    document.getElementById('mm-estado').value='Pagado/Cobrado';
     document.getElementById('mm-notas').value='';
+    document.getElementById('mm-obra').value=getObra()?.id||'';
     m._editId=null;
     document.getElementById('mm-title').textContent='Nuevo movimiento';
   }
   m.classList.remove('hide');
 }
+
 function editMov(id){ openModalMov(id); }
+
 function saveMov(){
   finInit();
   const concepto=document.getElementById('mm-concepto').value.trim();
@@ -1759,15 +1669,24 @@ function saveMov(){
   if(!concepto){alert('Escribí el concepto');return;}
   if(!monto){alert('Ingresá el monto');return;}
   const m=document.getElementById('modal-mov');
+  const impPct=parseFloat(document.getElementById('mm-impuesto').value)||0;
+  const impMonto=monto*impPct/100;
+  const montoTotal=monto+impMonto;
   const mov={
     id:m._editId||'mov_'+Date.now(),
     tipo:document.getElementById('mm-tipo').value,
     fecha:document.getElementById('mm-fecha').value,
     concepto,
-    categoria:document.getElementById('mm-cat').value,
+    proveedor:document.getElementById('mm-proveedor').value.trim(),
+    categoria:(document.getElementById('mm-cat').value||'').trim(),
+    monto:montoTotal,
+    montoNeto:monto,
+    impuestoPct:impPct,
+    impuestoMonto:impMonto,
     cuentaId:document.getElementById('mm-cuenta').value,
+    formaPago:(document.getElementById('mm-forma').value||'').trim(),
     obraId:document.getElementById('mm-obra').value||null,
-    monto,
+    comprobante:document.getElementById('mm-comprobante').value.trim(),
     estado:document.getElementById('mm-estado').value,
     notas:document.getElementById('mm-notas').value.trim()
   };
@@ -1775,10 +1694,21 @@ function saveMov(){
   else STATE.finanzas.movimientos.push(mov);
   saveState(); closeM('modal-mov'); renderFinanzas();
 }
-function deleteMov(id){ if(!confirm('¿Eliminar movimiento?')) return; STATE.finanzas.movimientos=STATE.finanzas.movimientos.filter(m=>m.id!==id); saveState(); renderFinanzas(); }
-function toggleEstadoMov(id){ const m=STATE.finanzas.movimientos.find(mv=>mv.id===id); if(!m) return; m.estado=m.estado==='pagado'?'pendiente':'pagado'; saveState(); renderFinanzas(); }
 
-// ─── Modal cuenta ──────────────────────────────────────────────────────────
+function deleteMov(id){
+  if(!confirm('¿Eliminar movimiento?')) return;
+  STATE.finanzas.movimientos=STATE.finanzas.movimientos.filter(m=>m.id!==id);
+  saveState(); renderFinanzas();
+}
+
+function toggleEstadoMov(id){
+  const m=STATE.finanzas.movimientos.find(mv=>mv.id===id);
+  if(!m) return;
+  m.estado=m.estado==='Pagado/Cobrado'?'Pendiente':'Pagado/Cobrado';
+  saveState(); renderFinanzas();
+}
+
+// ─── Modal cuenta ─────────────────────────────────────────────────────────────
 function openModalCuenta(editId){
   finInit();
   const m=document.getElementById('modal-cuenta');
@@ -1794,25 +1724,36 @@ function openModalCuenta(editId){
   } else {
     document.getElementById('mc-nombre').value='';
     document.getElementById('mc-tipo').value='banco';
+    document.getElementById('mc-moneda').value='ARS';
     document.getElementById('mc-color').value='#1e3a5f';
     m._editId=null;
     document.getElementById('mc-title').textContent='Nueva cuenta';
   }
   m.classList.remove('hide');
 }
+
 function editCuenta(id){ openModalCuenta(id); }
+
 function saveCuenta(){
   finInit();
   const nombre=document.getElementById('mc-nombre').value.trim();
   if(!nombre){alert('Escribí el nombre');return;}
   const m=document.getElementById('modal-cuenta');
-  const cuenta={id:m._editId||'c_'+Date.now(),nombre,tipo:document.getElementById('mc-tipo').value,moneda:document.getElementById('mc-moneda').value||'ARS',color:document.getElementById('mc-color').value};
+  const cuenta={
+    id:m._editId||'c_'+Date.now(),
+    nombre,
+    tipo:document.getElementById('mc-tipo').value,
+    moneda:document.getElementById('mc-moneda').value||'ARS',
+    color:document.getElementById('mc-color').value
+  };
   if(m._editId){ const idx=STATE.finanzas.cuentas.findIndex(c=>c.id===m._editId); if(idx>=0) STATE.finanzas.cuentas[idx]=cuenta; }
   else STATE.finanzas.cuentas.push(cuenta);
   saveState(); closeM('modal-cuenta'); renderFinanzas();
 }
+
 function deleteCuenta(id){
-  if(STATE.finanzas.movimientos.some(m=>m.cuentaId===id)){ alert('No podés eliminar una cuenta con movimientos. Reasignálos primero.'); return; }
+  if(['caja_ars','caja_usd','banco_ars'].includes(id)){ alert('Las cuentas por defecto no se pueden eliminar, solo editar.'); return; }
+  if(STATE.finanzas.movimientos.some(m=>m.cuentaId===id)){ alert('No podés eliminar una cuenta con movimientos.'); return; }
   if(!confirm('¿Eliminar cuenta?')) return;
   STATE.finanzas.cuentas=STATE.finanzas.cuentas.filter(c=>c.id!==id);
   saveState(); renderFinanzas();
@@ -1830,7 +1771,7 @@ async function sbGet(table, id){
   if(!USE_SUPABASE) return null;
   try{
     const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}&select=data`, {
-      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken()}
     });
     const d = await r.json();
     return d?.[0]?.data || null;
@@ -1839,19 +1780,18 @@ async function sbGet(table, id){
 async function sbSet(table, id, data){
   if(!USE_SUPABASE) return;
   try{
-    const r=await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
       method:'POST',
-      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken(),'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
       body: JSON.stringify({id, data, updated_at: new Date().toISOString()})
     });
-    if(!r.ok){ const err=await r.text(); console.error('sbSet error',table,id,r.status,err); }
-  }catch(e){ console.error('sbSet exception',table,id,e); }
+  }catch(e){}
 }
 async function sbList(table){
   if(!USE_SUPABASE) return null;
   try{
     const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=id,data`, {
-      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+sbToken()}
     });
     return await r.json();
   }catch(e){ return null; }
@@ -2026,7 +1966,7 @@ function filterSubs(){
 function onSubSel(){
   const rid=document.getElementById('fi-rubro').value; const val=document.getElementById('fi-sub').value; if(!val) return;
   const rubro=CIFRAS_RUBROS.find(r=>r.id===rid);
-  if(val.startsWith('c_')&&rubro){ const it=rubro.items[parseInt(val.slice(2))]; document.getElementById('fi-desc').value=it.desc; document.getElementById('fi-mo').value=0; document.getElementById('fi-mat').value=0; const un=it.un.includes('m2')?'m2':it.un.includes('m3')?'m3':(it.un.includes('ml')||it.un==='m')?'ml':it.un; document.getElementById('fi-un').value=un; }
+  if(val.startsWith('c_')&&rubro){ const it=rubro.items[parseInt(val.slice(2))]; document.getElementById('fi-desc').value=it.desc; document.getElementById('fi-mo').value=it.ref_ejec; document.getElementById('fi-mat').value=it.ref_mat; const un=it.un.includes('m2')?'m2':it.un.includes('m3')?'m3':(it.un.includes('ml')||it.un==='m')?'ml':it.un; document.getElementById('fi-un').value=un; }
   else if(val.startsWith('g_')){ const e=(STATE.globalCustom[rid]||[])[parseInt(val.slice(2))]; if(e){ document.getElementById('fi-desc').value=e.desc; if(e.mo_u) document.getElementById('fi-mo').value=e.mo_u; if(e.mat_u) document.getElementById('fi-mat').value=e.mat_u; if(e.un) document.getElementById('fi-un').value=e.un; } }
   recalcPU();
 }
@@ -2068,7 +2008,7 @@ function addItem(){
   document.getElementById('mi-title').textContent='Agregar ítem';
   document.getElementById('modal-item').classList.remove('hide');
 }
-function saveItem(keepOpen){
+function saveItem(){
   const obra=getObra(); if(!obra) return;
   const rid=document.getElementById('fi-rubro').value; if(!rid){alert('Seleccioná un rubro');return;}
   const desc=document.getElementById('fi-desc').value.trim(); if(!desc){alert('Escribí una descripción');return;}
@@ -2085,26 +2025,7 @@ function saveItem(keepOpen){
     if(ins===-1){ for(let i=obra.items.length-1;i>=0;i--){ const o=allIds.indexOf(obra.items[i].rubroId); if(o!==-1&&o<myOrd){ins=i+1;break;} } }
     obra.items.splice(ins===-1?obra.items.length:ins,0,item);
   }
-  saveState();
-  if(keepOpen && _ei===null){
-    // Keep modal open, clear fields but keep rubro and unit
-    _ei=null;
-    ['fi-desc','fi-prov-mo','fi-prov-mat'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-    document.getElementById('fi-sub').value='';
-    document.getElementById('fi-qty').value=1;
-    document.getElementById('fi-mo').value=0;
-    document.getElementById('fi-mat').value=0;
-    document.getElementById('fi-vu').value=0;
-    document.getElementById('fi-iva-mo').value=0;
-    document.getElementById('fi-iva-mat').value=21;
-    document.getElementById('fi-costo').textContent='$0';
-    document.getElementById('fi-pu-calc').textContent='$0';
-    document.getElementById('mi-title').textContent='Agregar otro ítem — '+document.getElementById('fi-rubro').options[document.getElementById('fi-rubro').selectedIndex]?.text?.split('|')[1]?.trim()||'';
-    filterSubs();
-    render(curPage);
-    return;
-  }
-  closeM('modal-item'); render(curPage);
+  saveState(); closeM('modal-item'); render(curPage);
 }
 function deleteItem(idx){ if(!confirm('¿Eliminar ítem?')) return; const obra=getObra(); if(!obra) return; obra.items.splice(idx,1); saveState(); render(curPage); }
 function editItem(idx){
@@ -2184,17 +2105,16 @@ function renderPCli(){
 
   let curR='';
   items.forEach((it,i)=>{
-    if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="12"><span contenteditable="true" style="outline:none;cursor:text" data-rubro="${it.rubro}" onblur="renameRubroByName(this.dataset.rubro,this.textContent.trim());this.dataset.rubro=this.textContent.trim()" title="✎ Clic para editar">${it.rubro}</span></td></tr>`;}
+    if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="12">${it.rubro}</td></tr>`;}
     const ptMO=it.qty*(it.mo_u||0), ptMat=it.qty*(it.mat_u||0), ptV=it.qty*it.v_u;
     const iva=ptV*(it.iva_mat||0)/100;
     const pct=totV>0?(ptV/totV*100).toFixed(1)+'%':'—';
-    const inpCli='min-width:60px;width:100%;text-align:right;padding:3px 5px;font-size:12px;border:1px solid var(--border);border-radius:4px;background:var(--surface)';
     html+=`<tr style="${tipoRowStyle(it.tipo)}">
       <td>${tipoBadge(it.tipo)}${it.desc}</td><td>${it.un}</td>
-      <td class="r"><input type="number" value="${it.qty}" min="0" step="0.01" style="${inpCli}" onchange="inlineEditPcli(${i},'qty',this.value)" title="Cómputo"></td>
+      <td class="r">${it.qty%1===0?it.qty:it.qty.toFixed(2)}</td>
       <td class="r">$${fmt(it.mo_u||0)}</td><td class="r">$${fmt(ptMO)}</td>
       <td class="r">$${fmt(it.mat_u||0)}</td><td class="r">$${fmt(ptMat)}</td>
-      <td class="r"><input type="number" value="${it.v_u}" min="0" style="${inpCli}" onchange="inlineEditPcli(${i},'v_u',this.value)" title="PU cliente"></td>
+      <td class="r">$${fmt(it.v_u)}</td>
       <td class="r" style="font-weight:600">$${fmt(ptV)}</td>
       <td class="r" style="color:${iva>0?'var(--amber)':'var(--text3)'}">$${fmt(iva)}</td>
       <td class="r" style="color:var(--text2)">${pct}</td>
@@ -2241,7 +2161,7 @@ function renderPCos(){
   let curR='';
   const inpS='width:100%;min-width:70px;text-align:right;padding:3px 5px;font-size:12px;border:1px solid var(--border);border-radius:4px;background:var(--surface)';
   items.forEach((it,i)=>{
-    if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="13"><span contenteditable="true" style="outline:none;cursor:text" data-rubro="${it.rubro}" onblur="renameRubroByName(this.dataset.rubro,this.textContent.trim());this.dataset.rubro=this.textContent.trim()" title="✎ Clic para editar">${it.rubro}</span></td></tr>`;}
+    if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="13">${it.rubro}</td></tr>`;}
     const ctMO=it.qty*(it.mo_u||0), ctMat=it.qty*(it.mat_u||0), ctT=ctMO+ctMat;
     const ivaMO=ctMO*(it.iva_mo||0)/100, ivaMat=ctMat*(it.iva_mat||0)/100, ivaT=ivaMO+ivaMat;
     const vtT=it.qty*it.v_u, mg=vtT-ctT, mgP=vtT>0?(mg/vtT*100).toFixed(1)+'%':'—';
@@ -2422,7 +2342,7 @@ function renderCert(){
     html+='<div class="card"><div class="tw"><table><thead><tr><th style="width:32%">Ítem</th><th>Un.</th><th class="r">Monto total</th><th class="r">Acum. ant.</th><th class="r" style="background:#fffbf0">% Mes</th><th class="r">% Acum.</th><th class="r">Monto mes</th><th class="r">Saldo</th></tr></thead><tbody>';
     let curR='';
     items.forEach(it=>{
-      if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="8"><span contenteditable="true" spellcheck="false" data-rubro="${it.rubro}" style="outline:none;cursor:text" onblur="renameRubroByName(this.dataset.rubro,this.textContent.trim());this.dataset.rubro=this.textContent.trim()">${it.rubro}</span></td></tr>`;}
+      if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="8">${it.rubro}</td></tr>`;}
       const vt=it.qty*it.v_u;
       const ant=getAcumAnt(obra,it.id,certIdx);
       const mes=cert.avances[it.id]||0;
@@ -2492,7 +2412,7 @@ function renderCert(){
     html+='</tr></thead><tbody>';
     let curR2='';
     items.forEach(it=>{
-      if(it.rubro!==curR2){curR2=it.rubro;html+=`<tr class="rubro-row"><td colspan="11"><span contenteditable="true" spellcheck="false" data-rubro="${it.rubro}" style="outline:none;cursor:text" onblur="renameRubroByName(this.dataset.rubro,this.textContent.trim());this.dataset.rubro=this.textContent.trim()">${it.rubro}</span></td></tr>`;}
+      if(it.rubro!==curR2){curR2=it.rubro;html+=`<tr class="rubro-row"><td colspan="11">${it.rubro}</td></tr>`;}
       const ant=getAcumAnt(obra,it.id,certIdx);
       const mesC=cert.avancesCosto?.[it.id]??(cert.avances[it.id]||0);
       const pct=Math.min(1,ant+mesC)-ant;
@@ -2581,7 +2501,7 @@ function renderHist(){
   let curR='';
   html+='<div class="card"><div class="card-head"><h3>Avance por ítem</h3></div><div class="tw"><table><thead><tr><th style="width:42%">Ítem</th><th>Un.</th><th class="r">Monto total</th><th class="r">% Acum.</th><th>Progreso</th></tr></thead><tbody>';
   items.forEach(it=>{
-    if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="5"><span contenteditable="true" spellcheck="false" data-rubro="${it.rubro}" style="outline:none;cursor:text" onblur="renameRubroByName(this.dataset.rubro,this.textContent.trim());this.dataset.rubro=this.textContent.trim()">${it.rubro}</span></td></tr>`;}
+    if(it.rubro!==curR){curR=it.rubro;html+=`<tr class="rubro-row"><td colspan="5">${it.rubro}</td></tr>`;}
     let a=0; obra.certificados.forEach(c=>a+=(c.avances[it.id]||0)); a=Math.min(1,a);
     const w=Math.min(100,a*100).toFixed(0);
     html+=`<tr><td>${tipoBadge(it.tipo)}${it.desc}</td><td>${it.un}</td><td class="r">$${fmt(it.qty*it.v_u)}</td><td class="r">${fmtP(a)}</td><td><div style="display:flex;align-items:center;gap:6px"><div class="bar-w" style="flex:1;max-width:100px"><div class="bar-f${a>=1?' done':''}" style="width:${w}%"></div></div><span style="font-size:11px;color:var(--text2)">${fmtP(a)}</span></div></td></tr>`;
@@ -2591,34 +2511,6 @@ function renderHist(){
 }
 
 // ═══ INLINE EDIT ══════════════════════════════════════════════════════════════
-function renameRubro(itemIdx, newName){
-  const obra=getObra(); if(!obra||!newName) return;
-  const oldName=obra.items[itemIdx].rubro;
-  renameRubroByName(oldName, newName);
-}
-function renameRubroFromConfig(oldName, newName){
-  newName = newName.trim();
-  if(!newName || oldName === newName) return;
-  renameRubroByName(oldName, newName);
-  renderConfig(); // re-render config to show updated names
-}
-function renameRubroByName(oldName, newName){
-  const obra=getObra(); if(!obra||!newName||!oldName) return;
-  newName=newName.trim();
-  if(!newName||oldName===newName) return;
-  obra.items.forEach(it=>{ if(it.rubro===oldName) it.rubro=newName; });
-  (obra.gtasks||[]).forEach(t=>{ if(t.rubro===oldName) t.rubro=newName; });
-  saveState(); render(curPage);
-}
-function inlineEditPcli(idx, field, val){
-  const obra=getObra(); if(!obra||!obra.items[idx]) return;
-  const it=obra.items[idx];
-  it[field]=parseFloat(val)||0;
-  // Recalc margen when v_u or qty changes
-  const costo=(it.mo_u||0)+(it.mat_u||0);
-  if(costo>0&&it.v_u>0) it.margen=parseFloat(((1-costo/it.v_u)*100).toFixed(1));
-  saveState(); renderPCli();
-}
 function inlineEdit(idx, field, val){
   const obra=getObra(); if(!obra||!obra.items[idx]) return;
   const it=obra.items[idx];
@@ -3058,18 +2950,6 @@ function renderConfig(){
     </div>
   </div></div>`:''}
   <div class="card"><div class="card-head"><h3>Vista previa del encabezado</h3></div><div style="padding:0;overflow:hidden;transform-origin:top left"><div id="header-preview" style="pointer-events:none">${buildHeader('pcli')}</div></div></div>
-
-  ${obra ? (() => {
-    const rubros=[...new Set((obra.items||[]).map(it=>it.rubro))];
-    if(!rubros.length) return '';
-    return '<div class="card"><div class="card-head"><h3>Rubros de la obra activa</h3><span style="font-size:11px;color:var(--text2)">Editá el nombre de cualquier rubro — cambia en todos los ítems</span></div><div class="card-body"><div style="display:flex;flex-direction:column;gap:8px">'+
-    rubros.map(r=>`<div style="display:flex;gap:8px;align-items:center">
-      <input type="text" value="${r}" id="rub_${r.replace(/[^a-z0-9]/gi,'_')}" style="flex:1;font-size:13px" onkeydown="if(event.key==='Enter')renameRubroFromConfig('${r.replace(/'/g,"\'")}',this.value)">
-      <button class="btn btn-gold btn-sm" onclick="renameRubroFromConfig('${r.replace(/'/g,"\'")}',document.getElementById('rub_${r.replace(/[^a-z0-9]/gi,'_')}').value)">Guardar</button>
-    </div>`).join('')+
-    '</div></div></div>';
-  })() : ''}
-
   </div>`;
 }
 function saveEmpresa(){
@@ -3091,10 +2971,7 @@ function render(p){ ({pcli:renderPCli,pcos:renderPCos,cert:renderCert,hist:rende
   const b=document.getElementById('loading-banner');
   if(b) b.style.display='flex';
   loadState();
-  if(USE_SUPABASE){
-    const ok=await loadFromSupabase();
-    if(!ok) console.warn('No se pudo cargar desde Supabase, usando datos locales');
-  }
+  if(USE_SUPABASE){ await loadFromSupabase(); }
   if(!STATE.empresa.logo||STATE.empresa.logo.length<10) STATE.empresa.logo=DEFAULT_LOGO;
   if(b) b.style.display='none';
   refreshObraSelect();
