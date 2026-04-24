@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0028)https://horbeton.vercel.app/ -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>HORBETON — Gestión de Obras</title>
 <style>
@@ -248,7 +248,7 @@ input.inp-av{width:64px;text-align:right;background:#fffbf0;border-color:#e8c97a
     <div class="fr"><label>Notas</label><textarea id="mm-notas" rows="2" placeholder="Observaciones adicionales..."></textarea></div>
   </div>
   <div class="modal-act">
-    <button class="btn" onclick="closeM('modal-mov')">Cancelar</button>
+    <button class="btn" onclick="closeM(&#39;modal-mov&#39;)">Cancelar</button>
     <button class="btn btn-gold" onclick="saveMov()">Guardar</button>
   </div>
 </div>
@@ -278,7 +278,7 @@ input.inp-av{width:64px;text-align:right;background:#fffbf0;border-color:#e8c97a
     </div>
   </div>
   <div class="modal-act">
-    <button class="btn" onclick="closeM('modal-cuenta')">Cancelar</button>
+    <button class="btn" onclick="closeM(&#39;modal-cuenta&#39;)">Cancelar</button>
     <button class="btn btn-gold" onclick="saveCuenta()">Guardar</button>
   </div>
 </div>
@@ -336,7 +336,7 @@ input.inp-av{width:64px;text-align:right;background:#fffbf0;border-color:#e8c97a
     <div class="fr"><label>Notas</label><textarea id="gt-notas" rows="2"></textarea></div>
   </div>
   <div class="modal-act">
-    <button class="btn" onclick="closeM('modal-gtask')">Cancelar</button>
+    <button class="btn" onclick="closeM(&#39;modal-gtask&#39;)">Cancelar</button>
     <button class="btn btn-gold" onclick="saveGTask()">Guardar tarea</button>
   </div>
 </div>
@@ -348,34 +348,255 @@ input.inp-av{width:64px;text-align:right;background:#fffbf0;border-color:#e8c97a
   <div class="sb-brand"><div class="sb-brand-name">HORBETON</div><div class="sb-brand-sub">Gestión de obras</div></div>
   <div class="sb-obra-box">
     <div class="sb-obra-lbl">Obra activa</div>
-    <select class="sb-obra-sel" id="obra-sel" onchange="switchObra()"><option value="">Sin obras</option></select>
+    <select class="sb-obra-sel" id="obra-sel" onchange="switchObra()"><option value="obra_demo">Casa LYM — Bella Vista</option><option value="obra_1776338463046" selected="">Casa CERO</option><option value="obra_1776348293675">test</option></select>
     <button class="sb-new-obra" onclick="openModalObra()">+ Nueva obra</button>
   </div>
   <div class="sb-sec">Presupuesto</div>
-  <button class="nav on" onclick="go('pcli')" id="nav-pcli"><span class="nav-dot"></span>Para el cliente</button>
-  <button class="nav" onclick="go('pcos')" id="nav-pcos"><span class="nav-dot"></span>Costos internos</button>
+  <button class="nav on" onclick="go(&#39;pcli&#39;)" id="nav-pcli"><span class="nav-dot"></span>Para el cliente</button>
+  <button class="nav" onclick="go(&#39;pcos&#39;)" id="nav-pcos"><span class="nav-dot"></span>Costos internos</button>
   <div class="sb-sec">Certificación</div>
-  <button class="nav" onclick="go('cert')" id="nav-cert"><span class="nav-dot"></span>Certificado</button>
-  <button class="nav" onclick="go('hist')" id="nav-hist"><span class="nav-dot"></span>Historial</button>
+  <button class="nav" onclick="go(&#39;cert&#39;)" id="nav-cert"><span class="nav-dot"></span>Certificado</button>
+  <button class="nav" onclick="go(&#39;hist&#39;)" id="nav-hist"><span class="nav-dot"></span>Historial</button>
   <div class="sb-sec">Planificación</div>
-  <button class="nav" onclick="go('gantt')" id="nav-gantt"><span class="nav-dot"></span>Gantt</button>
-  <button class="nav" onclick="go('cashflow')" id="nav-cashflow"><span class="nav-dot"></span>Cashflow</button>
+  <button class="nav" onclick="go(&#39;gantt&#39;)" id="nav-gantt"><span class="nav-dot"></span>Gantt</button>
+  <button class="nav" onclick="go(&#39;cashflow&#39;)" id="nav-cashflow"><span class="nav-dot"></span>Cashflow</button>
   <div class="sb-sec">Herramientas</div>
-  <button class="nav" onclick="go('mat')" id="nav-mat"><span class="nav-dot"></span>Calc. materiales</button>
+  <button class="nav" onclick="go(&#39;mat&#39;)" id="nav-mat"><span class="nav-dot"></span>Calc. materiales</button>
   <div class="sb-sec">Sistema</div>
-  <button class="nav" onclick="go('config')" id="nav-config"><span class="nav-dot"></span>Configuración</button>
-  <button class="nav" onclick="go('finanzas')" id="nav-finanzas"><span class="nav-dot"></span>Finanzas</button>
-  <button class="nav nav-admin-only" onclick="go('usuarios')" id="nav-usuarios"><span class="nav-dot"></span>Usuarios</button>
+  <button class="nav" onclick="go(&#39;config&#39;)" id="nav-config"><span class="nav-dot"></span>Configuración</button>
+  <button class="nav" onclick="go(&#39;finanzas&#39;)" id="nav-finanzas"><span class="nav-dot"></span>Finanzas</button>
+  <button class="nav nav-admin-only" onclick="go(&#39;usuarios&#39;)" id="nav-usuarios"><span class="nav-dot"></span>Usuarios</button>
 </div>
 
 <div class="main">
 <div class="topbar no-print">
   <h2 id="tb-title">Para el cliente</h2>
-  <div style="display:flex;gap:7px;align-items:center" id="tb-actions"></div>
+  <div style="display:flex;gap:7px;align-items:center" id="tb-actions"><button class="btn" onclick="addItem()">+ Agregar ítem</button><button class="btn btn-gold" onclick="printDoc(&#39;pcli&#39;)">Exportar PDF</button></div>
   <div style="display:flex;gap:7px;align-items:center;margin-left:12px" id="user-badge"></div>
 </div>
 <div class="content">
-  <div class="page on" id="page-pcli"><div class="print-header" id="ph-pcli"></div><div id="pcli-content"></div></div>
+  <div class="page on" id="page-pcli"><div class="print-header" id="ph-pcli" style="display: block;"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:16px 24px 14px;border-bottom:3px solid #b8965a;margin-bottom:16px"><div style="min-width:160px"><img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCADKAoQDASIAAhEBAxEB/8QAHQABAAICAwEBAAAAAAAAAAAAAAcIBQYBAwQCCf/EAFEQAAEDAwIABgwJCgUCBgMAAAABAgMEBQYHEQgSEyExURc2N0FhcXN0kbGy0RQiMzVTVoGToRUWMlJUVXKSlMEYIzRCYkWCJDhDZKLhdYPC/8QAGwEBAAIDAQEAAAAAAAAAAAAAAAUHAQQGAwL/xAAyEQEAAQMCAgcIAgIDAAAAAAAAAQIDBAURU6EGFRY0QbHhITVRUnFy0fAxkRTBEiJh/9oADAMBAAIRAxEAPwC5YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHCnIUDhDkx99u9FZqF9XWSI1qJzJ33L1IRBk+od2uUj4qJ3wSmXmTi/pKnjIvUNWx8GNq53q+EJXTtHyM+d6I2p+M/wAJokrKSNdpKqBi9TpEQ+PyjQfttL9833la5KuqlXjSVMz1Xvueqnxy0v0jvSc/PS2d/Za5+joo6Hxt7bvL1WX/ACjQft1L9833j8o0H7dS/fN95WjlZfpHekctL9I70mO1tXC5+jPZCni8vVZf8o0H7dS/fN94/KNB+3U33zfeVo5WX6R3pHKy/SO9I7W1cLn6HY+ni8vVZf8AKNB+3Uv3zfePyjQft1L9833laOWl+kd6Qk0v0jvSO1tXC5+h2Pp4vL1WX/KNB+3Uv3zfePyjQft1L9833laeVl+kf6TjlpfpH+kdrauFz9DsfTxeXqs7BPBOirDNHKidPEei7egx+TZBaccty3C8VSU1MioivVqrzr4jStDnudb63jOVf8xOlfAeDhSdzWTyzfWdTgZX+Xj03pjbdyeoYn+JkVWd99ma7Menf1gZ9y/3G04vkNoya2/lGy1aVVNx1Zx0aqc6dKc5QMtrwUu5kvnkn9jcaaXAABrmW5vjOKVEFPfrk2kknYr40Vjnboi7b8yGETWLTtV2TIGfcv8AcRJwxu2SxeZv9sgiP5RvjQD9CqGqgraSKrpn8pDK1HMdttuincYPAe021eas9lDOADX8qzTGsZiV94usEC/qIvGf6E5yMtddX0sD5bBj0jX3DbaabpSLwJ4Sslyr6y5Vb6quqZaiZ67q+RyuX8QLP3PhE4tTyKylt1dVInQ9uyIvpPLTcJCwOeiTWSvY3rRzeb8SskMMsz+JDG6R3U1N1O2ooaynbxp6WaJvW5ioBcrFNXcKyCRsEVybS1DuiOdFb+K8xvscjJWJJG9r2Lzo5q7op+eCKqKioqoqd9CU9ItXbvi1XFQXOeSstTnIjmvXd0fhRV9QFvgeOzXKku9tguFDM2WCZqOa5FPYBqeS6jYfjl1fa7xd201WxrXOjWNy7IqbpzohjezHp39YGfcv9xXzhQ912t82g9hCLwLp9mPTv6wM+5f7h2Y9O/rAz7l/uKWAC7FNq1gFQ9Gx5BFuv60bk9aG12q72u6xJJbq+mqmqm/+XIjlTxonQfn4ZTG8hu+PV8dbaa2ankY7fZrl4rvGnQoF/QaDovqBBnFhV8vFZcKfZs7E7/hQ34DSLjqvgdvrpqKrvjI54XqyRvJPXZU5lToOjsx6d/WBn3L/AHFTdSe3u8+eSe0prwF0+zHp39YGfcv9w7MWnf1gZ9y/3FLABeG26m4PcJUjpr/TK5ejj7s9extdLU09VEk1NPFNGvQ6N6ORftQ/PM3XTbUW+4dc43w1Us1EqoktO9yq3i+DfoAu4dVbUw0dJNV1D+JDCxXvdt0NRN1U8WL3mkyCxUt2on8aGoYjk8C99DpzjtNvHmUvsqBrLtYdPGuVq5AzdF2X/Jf7h2Y9O/rAz7l/uKX1Hy8n8S+s+ALp9mPTv6wM+5f7h2Y9O/rAz7l/uKWAC6fZj07+sDPuX+49ti1Nwq93SK22y8tnqpl2YxInpv6UKPm+aA91Wz/xO9lQLfZVktmxihbW3usSlgc7io9Wq7dfsQ1jsx6d/WBn3L/cavwte0Gl85T+xVQC6fZj07+sDPuX+4dmPTv6wM+5f7ilgAun2Y9O/rAz7l/uHZj07+sDPuX+4pYALp9mPTv6wM+5f7jeKKpgraSKrpn8eGVqOY7bpRT89C+2DKjcNtTlXZEpWKq/YBmzVst1AxTGGql0u0LZe9ExeO7fq2Tfb7SI9c9ZZaeomx7F5kRzd2VFU3n+xvvK8VVRPVzunqZpJpXru573Kqr9qgWfuHCMxmGRWUtqr6hE6HorURfSddHwj8de9G1Fmr40X/citVE/ErHT089Q7iwQvld1NbufVTR1VNt8Ip5Yt/12qgF1cS1Sw3JHtio7rHFOv/pTfEX0rzKbq1Uc1HNVFRehUPzwY90b0exytci7oqLsqEz6M6y3Cy1UNoyKd9VbnKjWyvXd8X299ALUg6qOohq6WOpp5GyRSNRzHIvMqKdoGmXjVHB7RcprdcL02GpgcrZGck9dl+xDzRav6eyysiZkEaue5GpvE9OdfsKt609029+cu9amnIqou6dIH6HQSxzwsmiej43ojmuToVFPsiDg0Zsl+xlLJWS71tAnFbuvO6PvEvgFVERVXoQ0i46r4Hb62Wjq74yOeFyte3knrsvoN1m+Sf8AwqUR1J7ebv5y71gXHxfUHEsmuK2+y3VtVUoxXqxI3N5k7/OhtJUzgod0mTzN/rQtmAAAAAAD5le1kbnuXZrU3VfAfRgNQat9FiddMxdnKzib/wAXN/c8r92LVuq5PhG71sWpvXabceMxCH9Qchmvl7l4rnJTQuVkbN+bm75rSDv86nJUmRfryLk3K59srgx7FGPaptUR7IcHIODxexzjnAA5OFG4Ac4QfaEA5BwcgSzoZ83VvlU9R4eFJ3NZPLN9Z7tDPm+t8qnqPDwpO5rJ5ZvrLP0LuFv98VWa/wC8Ln74KjFteCl3Ml88k/sVKLK8HDM8asWn60V1usFLP8Ke7iPciLsu3OS6HT4DT+ybhH7/AKT+dB2TcI/f9J/OgELcMbtksXmb/bIIj+Ub40Ji4UeRWfIb9Z5rPXRVccVK9r1Yu+y8ffYh2P5RvjQC+mA9ptq81Z7KGM1dyduKYTW3FrkSdzeTh/iXoMngPabavNWeyhCnC/ujkZabSx2yLxpHp19QFeqypmrKqWqqJHSSyuVz3OXdVVTddH9PqvOr5yXGdDb4PjVEyJ/8U8JoqJuuyF0tA8eisGnVAjWoktW1KiR23OvG50T7AM1jODYvj9EymoLTTfFTZXvZxnOXr3UylXYrNVxLFUWukkYqbKjokMiAK666aNUlLQzZDi8KxNjTjT0qc6bdbSvCoqLsqbKfobURMngkhkajmParXIvQqKUb1Wsjcez26WyNNo2TKrPEvOBLXBRzGRKufFKyVXNe3labjL0bdKfiWOKKaW3R1nz+z17XK1rKlvH8KdRepjuMxrutNwKf8KHuu1vm0HsIaFiUMVRlFsgmYj45KqNr2r0KiuTdDfeFD3Xa3zaD2ENGwrtvtHnkXtIBc/scYT9X6T0L7x2OMJ+r9J6F95tYAi/OtGMRvFpm/J1C23VrWK6OWJV516lRe8VHutFNbrlUUNQ3iywSKxyeFFP0DrJo6eklnlcjI42K5yquyIiIUPz6uhuWZXWup13imqXub4twNw4Nd5mtup1DSMcqR1+8L035ujjf2LilMuDtbZq/VW1SxtVWUjlmk27zeKqetULmgUP1J7e7z55J7Sme4P8AbKC76mUVDcqZlTTvjkV0b+hdmrsYHUnt7vPnkntKbJwdKulotUqGorKiKnhbFKivkcjWp8Ve+oFoexxhP1fpPQvvOHab4S5Nlx6k2+33mV/OjG/39bf6lnvOFynGkTdb9bUTzlnvAhnXPSGwUWM1N/x+n+BS0qceSJrlVr0+3vlbC0OvmqFg/NaqsForY66qqk4jnRORzGN6905ir3SoFqOCTcZqvCq6lleqspKniRoveRW7/wByUc47Tbx5lL7KmgcGHH57NgC1VQxWPuEvLcVU59kTZDf847Tbx5lL7KgUJqPl5P4l9ZLnBjxqyZJe7pDe6COsjihYrEeqpsqq7qXwER1Hy8n8S+smfgpXa2Wq/XaS53Clo2PhYjXTyoxHLu7o3AnLsVYD9Xaf+d3vHYqwH6u0/wDO73mY/PLEvrLaf6tnvH55Yl9ZbT/Vs94GH7FWA/V2n/nd7z2WfT3DrPcIrhbrJDT1MXOyRrnbp6VPZ+eWJfWW0/1bPeZC1Xa13aN8lsuFLWsYuznQSo9Gr1LsB0ZHj9oyKjbR3miZVwNdxkY5VREX7DXuxVgP1dp/53e83UAaLW6WYEyjne3HadHNjcqLx3dO3jKZXeNkV0qYo28VjZXI1OpNz9ALh/oKjyTvUpQG+fPNZ5Z3rA3fg/2W2X7P4qC7UraqmWNVVjlVE3+wsz2KsB+rtP8Azu95Xbgwd06DyLi3wGldirAfq7T/AM7veYjXbJY8L0+Wkt20M1Q34PTtRf0U76p4kJMKu8Lm6unyygtbX7x09Px1Tqcqqnq2AhGR7pHue9yuc5d1Ve+pJmh+mMub17q2uc+G1U7vjuROeRf1UI0hYskzI06XORPSXp0wsUGP4TbaCKNGOSFrpNk6XKnOoHpseIY3ZqVlNb7PSRMYmyKsaOX0rznpuGOWK4QOgrLTSSscmyosSesygAq7rzpDHj8L8hx1rloVX/Pp+nkvCngIQP0GvNDDcrVU0NQ1HRTxuY5FTrQobltsdZ8kr7c5NuQmc1PFvzAWL4K2YSXKz1GO10yvmpPjQK5edWdX2E5FL+D5c323VG1o1yolS7kFTr4xdACj+tPdNvfnLvWppxuOtPdNvfnLvWpxpBZabIc0p7PVNR0dSx7fEvEVUX0ogHj02yipxHLKS7QOXk2vRszf1mLzL+BeO0V9NdLZT3Ckej4Z40e1UXfpQoZllkqsdyCrtFY1WyU8it506U7yk+cFbNuWppMTr5t3x7vpeMvSnfaBP83yT/4VKI6k9vN385d6y903yT/4VKI6k9vN385d6wN94KHdJk8zf60LZlTOCh3SZPM3+tC2YAAAAAANU1X7Sazxs9pDazVNV+0ms8bPaQ0tS7pd+2fJvaZ3y190eaBgEOe8VMt1x0G54DhkGSUc08tVJCsbuLs1Ok0xSXtDvmms8ohL6Hj28jLi3djeNpRGu5N3Gw6rlqdp3h1diek/eM3oT3DsT0n7ym9Ce4ksIdx1FgcPzcH1/qHE8kadiik/eU3oT3HHYnpP3lN6E9xJgHUWBw/M6/1DieSKLzpnS0FqqaxtwlcsMavRFROf8CMu+WPy7tZuHkHFcP8AcpyfSLCsYlyiLNO0TDr+jedfy7VdV6reYlypwqHIOcdIlnQv5vrfKp6jw8KTuayeWb6z3aGfN9b5VPUeHhSdzWTyzfWWfoXcLf74qs1/3hc/fBUYAsZwedP8TyXA1uF5tMVVU/CXs47lXfZNtkJdDq5gup2HtPfq9T+lR2HtPfq9T+lQKVnMfyjfGhLnCZxWxYrfLTT2KgZRxz0znyI3f4yo7bciOP5RvjQC+mA9ptq81Z7KFc+FzI5c6oo+8lG1fxUsZgPabavNWeyhXrhd0zm5bb6rb4r6ZGIviVQIUok41ZC1e/I1PxL84pGkWNW6NNkRtMxE9BQSmfydRHIv+16L+JfTBqptZh9qqWKipJSsX8AM0AABUPhSRNi1QkVu3x6Vjl8e7i3hTnhLVjKvVOtaxd+QY2JfGm6/3Aju3vdHX072rsqSNVPSfoLRrxqSF3WxPUUAsFM6svdHTMRVdJM1ERPGfoBTJxaeNOpiJ+AFQuFD3Xa3zaD2EI2t1XLQ19PWw7cpBI2Rm/Wi7oSTwoe67W+bQewhG1upJq+vgooERZZ5GxsRV2TdV2QCUuz7m3/tf5VHZ9zb/wBr/KfHYB1B/ZqL+qb7zhdAtQUTmpaJV86b7wMFlmqmZZHSupKy5vjpnfpRRIjUX7ek1WxWi4Xy4soLbTPqKiReZrfWZnMsCyjEkR16tzoo1XblWLx2b+NOYwVquNba62OsoKiSnnjXdr2LsoFu9CtN24Tan1VarX3OqanKKn/pp+qhJhG+gWczZnizvhyotfRuSOZyf7upSSAKH6k9vd588k9pTX2uc1d2qqL1opsGpPb3efPJPaUymieP27JtQKS0XRjn00kcjnIi7LujVVANN5ab6WT+ZQs0q9Mr1/7lLf8AYMwL9jm/n/8AoLoXge3+jm/n/wDoCnptmlsuKw5PBJlcczqVrkVvF/Q3/wCXf2Jf1N0EoKWzz3LF55klhar3wSqio5E6uorq9qserXJsqLsqAfoJZaigqbXTzWx8bqRzE5JY/wBHY8ecdpt48yl9lSEeCVlNRO6uxqrmV8cTOWp+MvRzoitT8VJuzjtNvHmUvsqBQmo+Xk/iX1nwfdR8vJ/EvrJO4PeE2bNbvcaa8pKrKeJjmcm5E5139wEXbr1jdest12A8F/UrfvE9w7AeC/qVv3ie4Cou69ZZrgd9rV688b7CGwdgPBf1K37xPcbjgOE2bCqOopbMkqR1EiSP5RyKu+2wGzAADouH+gqPJO9SlAb5881nlnesv9cP9BUeSd6lKA3z55rPLO9YEj8GDunQeRcW+Kg8GDunQeRcW+AFOuErK6TVKuaqrsxrWp6C4pULhQUrqfU2aRyKiTwtkTw97+wEe4tEk2R2+JyIqOnYnP4y/VEm1HCnVG1PwKAWKo+C3mjqPo5mr+Jfu1ysnttNMxUc18TVRfsA9IAAFKtf4mw6r3prEREWRF2TxIXVcuyKvUUg1qrmXHUy81Ua7tdNt6E2Ax+mcjos/skjV2VtYxU9Je5i7savgKMaS0zqvUixQoiqi1jN/Am5edqbNROpAKQa09029+cu9amU4OXdYtP8TvYcYvWnum3vzl3rUynBy7rFp/id7DgJR4VGE/CqCPK6GHeaHZlSjU6W95xXvGLxVWG+0l2o3K2WnkR6c/T4C+9zoqe42+ehqmI+GeNWPavUqbFH9UcVqMQy+rtcrV5Hjq+B23M5i86ejoAuZh9/pclxWmvFK9HNni3cif7Xbc6FK9Se3m7+cu9ZJfBhzf8AJd0mxmvm2patFdBxl5mybdH28xGmpPbzdvOXesDfeCh3SZPM3+tC2ZUzgod0mTzN/rQtmAAAAAADVNV+0ms8bPaQ2s1TVftJrPGz2kNLUu6Xftnyb2md8tfdHmgY57x8nJU63XJLuhvzTWeUQiEl7Q75pq/KITvRvv8AT9J8kD0l931fWPNIwALIVkAHAGLy/tZuHkHFcF6VLKZDTS1ljrKaFEWSWJWtReshnseZLv8A6eL7xDjuk2Jfv3aJt0TO0eH1dp0Xy7Fi1ci7XEbz4z/41IKbb2O8l/Z4vvEHY7yX9ni+8Q5jqzM4U/06nrTD4tP9ts0L+b63yqeo8PCk7msnlm+s2LSywXGxUdTHcI2sdI9FbxXb9413hSdzWTyzfWWJo1uu1hUU1xtMflW+tXaLudcroneJ/CoxbXgpdzJfPJP7FSi2vBS7mS+eSf2JRFJcAAFZuGN2yWLzN/tkER/KN8aE78MbtksXmb/bIIj+Ub40AvpgPabavNWeyhFvC0sT63GKK7xMVy0cio/bqcSlgPabavNWeyh68ltFNfbHV2qrYjoqiNWL4PCB+f5aXgvZpBccdXG6ydEraRd4muXnezweLmK+ag4nccQyKotddE7itcvJS7fFe3vKhiLPcq60XGK4W6ofT1ETuMx7V2VAP0GBXPEOEU6KkZT5HbHTStTZZ4Xbb+NOczdx4RmPx07lorVVTy7cyOXipv6AJYzO/wBFjWPVV1rZGsZExVair+k7vIUXyS6TXq+Vd0qHK6SolV6qv4Gxak6i37N6tHV8qRUjF/yqePmanhXrU1CnhlnmZDCxz5Hrs1rU3VVA37g/WJ971Lty8RXQ0juXkXvbN734l0E5k2Iu4PWBuxLG1rK6NEuFciPfunOxveQlECn3Ch7rtb5tB7CGjYV232jzyL2kN54UPddrfNoPYQ0bCu2+0eeRe0gF+gABrOqVvp7lgV3gnia/amc5u6dConMqFFZG8WRzepVQv1mTVfilzanPvTP9RQep5qiVP+a+sCeOB9UOS93al3+K6FHqnhRUT+5ZYq/wQXJ+d9zb3/gar/8AJpaACh+pPb3efPJPaU2rgz91q3+Sl9hTVdSe3u8+eSe0pzp3lEuH5RBfIIGzvia5qMcvMvGTYC94K0f4kLp+5IP5gvCQum3NZYN/4gLEZDUwUlirqioe1kbIHq5V6P0VKC3SVs1yqZWJs18rnJ4lU3zUDV7KMupHUEz4qSid+lFCipx/Gu5HfSoEtcFdkrtSUcxF4rYHK/xbKWfzjtNvHmUvsqRNwVsOqLTaqnI66JY5a1qMha5OfiIqLv6UJZzjtNvHmUvsqBQmo+Xk/iX1k58D3tivPkI/W4gyo+Xk/iX1m3aX57X4HXVVVQ00M7qljWuSROjbf3gXgBV//EbkX7rov5V94/xG5F+66L+VfeBaAFX/APEbkX7rov5V956rPwg7/W3WlpH2yjRs0rWKqNXmRV8YFlgddLIstNHKqbK9qO9J2AdFw/0FR5J3qUoDfPnms8s71l/rh/oKjyTvUpQG+fPNZ5Z3rAkfgwd06DyLi3xUHgwd06DyLi3wArtwvrG90lrv0bFVEasEionQm6qnrLEmA1AxumyvFqu0VCJvIxVjcv8AtenQoFDUVUVFTpQuFweMzp8jw6C3yytSvoWpG9irzuanQ4qjlVhuGOXqe13KF0U0TlTnTmcnWhxjN+umOXWK5WmqfTzxr0ovMqdSgX+BXzGeEbTfBWR360vSdE+NLA74q/Ye28cI2yx0zvyZaaiaZU+Kr3cVEX0ASXqnlVJiWI1dfPKjZnMVkDN+dz16Nij9dUyVlZNVSrvJK9XuXwqu5n8+zW+Znc1rLtUKrG/JQt5mRp4EMFbqKpuFbFR0cL5p5XI1jWpuqqoEq8FuwSXLPPym5irBQxq5V6nL0FtDRdFcKZhmJRU0qItbUbSVDvCve+w3oCj+tPdNvfnLvWplODl3WLT/ABO9hxi9ae6be/OXetTKcHLusWn+J3sOAuYRPwkcKbkWKuutLFvXUDVemyc7md9CWD5lYySN0cjUc1ybKi99APz2pZ56KrjqIXOjmidxmqnSiofd0rZrjXy1s+yyyu4ztus3vXrC34lmUz4I1S31irLAqJzJv0t8fvI7Al7god0mTzN/rQtmVM4KHdJk8zf60LZgAAAAAA1TVjtJrPGz2kNrNU1X7Sazxs9pDS1Lul37Z8m9pnfLX3R5oGAG5U63Ql7Q35pq/KIRDuS9ob801nlEJzo33+n6T5IHpN7vq+seaRgAWSrIGwAAcxjsnnlpcfraiByskjhVzXJ3lIO/PXJN/nOb0kRqOsWsCumm5Ezv8ExpujXtQoqqtzEbfFYLYFffz1yT95zek5/PXJP3nN6SO7V43yTySXZLK+eOawJG3CJs11vmAyUdooJ62oWVqpHC3jO236j3aSXi43aiqn19S+ZzHojVd3uY3sn8PJpyrNN2mNolz2Zi1Yl6qzVO8wo32M9QPqjd/wCnUsxwb7LdbFp8tFeLfUUNT8Ke7kpmcV2y7bLsSYDZawAAK/8AClxTJMhv1nmsdlrbhHFSvbI6CNXI1ePvspDrNM8/R7VXEbt0/s6l4gBiMMp56XFbbT1MTopo6djXscmytVETmUy4AGt57hlmzK1rRXSBFcif5crU+MxfApWfO9EMrsU8ktrp3XWjRd2uhTd6J4WlvAvPzKB+e9bb66imWGrpJoZE6WvaqKh0NilcuzY3qq+A/Qaot9DUJtPRwSJ/yYh0wWa0wO40VupmL1pGgFKcX06y/IpWJb7NUck5flpGq1ifaWK0l0ZtuKvjud2Vtbc0TdEVN2Rr4OvxksxxsjTZjGsTqamx9AE5k2QAAVe4Q2E5be9Tau4WjHrhW0roIWtlhiVzVVG7Km5qGJ6c51TZPbKifFbrHFHVRue90CojURybqpdAAAAB57lClTb6iBU35SNzdvGhS27aYZ5Hc6lkOLXSWNJXcV7IFVHJv0oXaAFVdE7LnuF5kyunw67OpqhnITKsCpxWqqLv+BaoACm+e6eZxWZjdaqlxa6TQS1UjmPZAqo5FcuyoYPsZ6gfVG7/ANOpeQAUb7GeoH1Ru/8ATqcpplqAq9qN2T/9Cl4wBSqg0g1Aq3o38gVEG/fnRWIn4Eraa6ApRVUVxyueOV8ao5KWNd27+Fe+T+AOunhip4GQQRtjjYnFa1qbIiGPy6Capxa6U9PG6WaWkkYxjU3Vyq1dkQygAo9Pppn6zPVMRuyorl2/8OvWfHYz1A+qN3/p1LyACjfYz1A+qN3/AKdR2M9QPqjd/wCnUvIAKN9jPUD6o3f+nUyGOacZ3BfqGabFLqyNk7HOcsC7IiL0l1AB00LXMooWORUcjERUXvcx3AAdNa1z6KdjUVXOjciInfXYpZeNNs9lutVJHid2cx0rlaqQLsqbl2QBWDg94Vllk1Bhrbtj9woqZInIss0Stai+Ms+AAAAGnak6e2TNqBY66JIqpqf5VQxPjNXw9aFZ810azHH55H09C+5UiKqtlp04yonWqd4uSFRFTZURU8IH561NHVU0qxVFPLG9OlrmqiodccE0jkayJ7nL0IjT9A6i22+oTaeip5PHGh809otdOu8NvpmL4I0AphiWl2ZZHKz4NaZoKdy8887Vazbxlk9KNJ7RhbG1k+1Zc1Tnlc3mZ/ChJDGNYmzGo1OpE2OQAAAqJqvgGaXLUC71tBjNzqKaWoc6OSOFVa5N+lFMloTg2X2fUm2190x240lLG53HllhVrW/FVOdS1IAAADSNaMNjzLDp6RkfGrYEWSmVE5+Mne+0qm7TLUBrlT80rsuy7bpAvOXjAFauDdhuVWLPZKy8WGvoadaVzUkmiVrd905tyyoAAAAAAANU1Y7Sazxs9pDazWtTYXT4bWsYm6oiO+xF3NPUYmcS5EfLPk3dNmIy7Uz80eaAAAVKt4JN0jvtptVtqY7hXRU7nPRUR67bkZA3MDMqw70XaI3mGnn4VGbZmzXO0T8Fhfzyxn98U38xwuZ4yn/V6b+Yr2Ce7V5PyRzQHZHG+erl+FglzbGU/wCrU6/9x8LnOMJ/1SH0kAHBjtVk/JHP8s9ksX56uX4ThkeZY7V2KspoblE6SSJWtTfpUhBekcwQiNR1K5qFVNVyIjb4JjTdLtafTVTbmZ3+LlTgKCNSaWtDPm+t8qnqJKI10L+b63yqeo69csquVtjt+N2JysuV2k5NsidMbV75Z+hdwt/viqvX/eFz98EgVN4tdNKkU9fTxvXoasibnsiljlYj4nte1ehWruhFln0Ux/8AJ7VvNRW1tfIm80yzKnxvAebDrHkuDahx2ek+F3DGqtvM968ZIHeNSXQ6XXOa1quc5GonSqrseFL1aVqPg6XGm5Xfbi8om5Euf3K85vqCmC2Ssko6Gmbx6+aNdlVO+hmXaI4l8A5Fr65J9uabl1336wJPa5HNRzVRUXoVFPlZokk5NZWI/wDV4yb+ghzTS73nEs/m0/v9W+rgkTj2+d67qqbb7eg07Vtb8msk9XZJZVmoIW1PJtcuzmt53Jt4kUCy58skjeqoyRrlTpRF32MFgOSUuVYzS3Wmcm72okrO+x6dKKR7olUTLm2bceR70jnRWoq77ASzW1tJRR8erqYoW9b3Ih80Nwoa1vGpKuGZP+D0Ug3ErRT6m5vfqzJK6fkaKfkqejbLxUam6977DJZnpnVY0+lv2AvrvhkMzeVpWycZJGd/pAmWSpp43cWSeJjupz0RT5+GUn7VB94hoV60ztGWVTL5d3XCmrZ4mcrEydWo1UTo2Qi3EtP7Vc9Vr7jdRV1/wKiha+LadyO3XbpUCyTKiB6KrJ43I3pVHoux8fDKT9qg+8Qje54Pa8MwTI5rVPVufPRvRyyzK7bZO8alpLpfYMlwWgvFxqbitTO1VfxKlyJ6AJ4jnhlXaOaN6/8AFyKfT5I2KiPka1V6N123K/al4zJpgy35BjV3rGp8JbHJTyyq9HovjM7rbWTvvOFyte+LlahFc1F26gJmPnlY+U5PlGcf9Xfn9Byz9BPEQy6eb/ExyPKv5P4Mnxd+b9HqAmZzmsarnORqJ0qq7HhZerS+o+DtuFMsv6vKJuRLn9wvGb6jJgVorX0VDSt5SumjXZVTp2/sZibRHFFoOShlro6lG/Fn5dd+N1gSe6SNjOO6RrW/rKuyHV8MpP2qD7xCJsIx7ILlbrthOYNrX0VLKi0tcj+KsrepF6TU9bNOLPiOJw3O11dw5d9bFCvHqHKnFdvv6gLDJV0irslTCq+UQ7JJI4mK+R7WNTpVy7IRTYdHMa+CUVwdV3LlEayVd6l226c5hLi666pag11khrpqPH7W9Y5lidssrkXnTcCZILzap51hiuFM+RP9qSJue9FRU3ReYi24aJYw+hVlvmraSran+XMkyqqO61PPoxkt2iu90wXIpVlrrZ8jM7pkZ3gJUdVUzXK11TC1U6UV6HLaqmcuzaiFy9SPQr7h+H2/NNSMtiu9RWoyklasSRTK3bdV39RsWWaQ2i02CrudlutypKumjWRj3VCqm6ATKfMkkcSbySMYnW5djRdB79X5FpxR19yeslQ17oXPXpfxdudTR9epbjlGW0uH2iofH8Ep3VdSrF6F23b6wJ0RUciKioqL0KgNC0Jvzr3gVKyd6rV0e8E6L0oqdG/2G+gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6a2nZVUk1NIm7JWKxfEqbHcFMTETG0sxMxO8K25LaprPeZ6KZnF4rlVnhb3jHE9Z5icGQ0Svj4sdZGn+W/bp8CkI3e1V9qqn09bTvie1dt1TmX7SstX0q5hXZmI/wCk/wAT/paOj6tbzrURM7Vx/Mf7eI5OAQ6aNgoQKGHJwo2CgAAgHIAAlnQz5vrfKJ6jAaq7Q654jUTc0CxcRFXo43GUz+hnzfW+VT1GS1ewp+W2iGWhlSC60L+VpJOj43UpZ+hdwt/viqzX/eFz98G8GGueTWe3X2islTVNZXVq7Qxd9xGNDn+pFqpm226YLLVVkacRs0b/AIsnUvgMhp7iWQ3TMHZ1mcbaera3iUlGi78knWvhJdDsZpMqU+tWYwVHNPLKr49+lW83QTURZqhhN7TIqfNMNe1t1gTaaBV2SdvUY9dSdRHQfBG6ezJcNuLzyfFResDz6lK2q4QOJQUnPPDC/leL3udV5/sO6mY2ThJ1Mb2o5rqJyORe+nFUy2lWD3amvVVmOXSNlvVWmzI050gb1eM5pMevLNeJr86glS2upVYlRzcXfZebp3AwtsV+mepzra9VZj97k40Kr+jFKq9H4n3oZJGmb5tI5ycn8IRVXvbG/amYpDl2LVFtdsypROPTS99j06F3I/4PeJ5JZZL+mS0E1OtXs1skiovKJ0bpsoHtvGmlqyC5z5Ph2Qz2qrmevKS0rviuenT0Kmxg7zWaq6dwJc7jcor1Z4nJy6v55Eb1qq9B22ylzfS251lHa7M+/WCeVZYlY7Z0Sr07+E5yW7Z9qLb3Y5TYq+02+qVG1NVO7obv0bc4Ew49c4bzZKO6QJtHUxNkai97dCKNO/8AzA5X5qz1oSrjNrjslgorVE5XtpYWxo5e/snSR/hOO3qh1nyK9VVvlit9TTtbDOu3Feqbcyc4G2apdz69+aP9RD+ktp1NqcFoJbDfKGmt6tXko5GbuRCaNQaOpuGF3aio4XTVE1M9kbG9LlVOgxGilpuNk06ttuulK+lq4mqj4n7bt9AEP57RZZasoslZqHUsu1o5dERkLlRjXb9Kobdr4rUyHDXJ8VnwpNvB0Gc4QuO3bIcQp4bNRSVlVFWRv5Nm2/FTfdec7NT8Qrsyw2glpWuo7tR8WaFknSjk/wBq7bgSKz9BviIUX43Cddxefi0yb+D4p2Ueoeo1DRNt9dgc89fG3iJI1/xXqnNuZXSTD75HkVwzXLGtjulc3ixwIu/JN5unw82wGI0s2p9d8ugqOaaSJqs36VTdV9RNRFWpuG36DKIM4wzivucScWemXomb79jwSaiajVlMtDSYDNDcHJxeUc/djF6wJMt2S2e4X6sslJVNlraP5dif7DQOFF3PKX/8nB//AEZnSDCanGKWruV3nSovNxfylS9F3ROpqHRwgbFdsgwqnorNRSVlQ2vhkWNm26NTfdecDcbY1zsWhaz9JaTZPHxSL+Dc5kNTlFFLs2rZcFV6L0r085LNlikhtNLDK1WvZE1rmr3l2IqzTEcmxvMZMzweJtU6o/1dCq7cfrVAJgIStytqeE1WyUvOynpVbOrejdWrtueip1D1GuFOtDbcDmp616cVZHv+LGvX4TZNI8FqMap6y7XiZKm+XFePUP6Ub/xQCMcSocxrNSsuTE7lTUTmzN5dZm78ZN122/EyWo1k1bZitZLcL5TVNCxm9RFBuxz2d9DbdJ8evNpz7LbhcaCWnpayRi08jttpERV322Xwm+5XRyV+N19FC3jSTQOa1vWoGr6SXGzx6U0Vfbaf4JSQwK5zHO32cic+698iPTzUK02/KsgyO82651dRXTLHA+GnV7Uh3/R3+xDP2ay5rQ6GvxmHH62O5S1Do3N3bzRuVPjJz+AlfBscpbFilvti00XKRQt5XdqKqv2+N+IEN6EZPSw6oXm2QRVFNQ3Zyz00c7FYvH6V5l8CKWFIo1lxW7zZBjuSYxbnT1dFUI2ZkKIi8lzqq97r2JTpnvkp45JI1je5qK5i9LV26AOwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACgKAQ8dztlDcoViraaOZv8AyTfY9iA+aqaa42qjeH1TXVRP/KmdpaZV6cY9MqrHFJEq9TjzdjCyfSS+k3wGhVpGFVO824SFOsZ1MbRdn+2h9jGyfSS+kdjGyfSy+k3wHz1Pg8OH111ncWWh9jCyfSS+kdjCy/SS+k3wGep8Hhwx11ncWWh9jGyfSS+kdjCy/SS+k3wDqfB4cHXWfxZaH2MLJ9JL6R2MLJ9JL6TfAOp8HhwddZ3FlhMVxyjx6GWKkc5UkduvGM2EBvWrVFmiKKI2iGhdvV3q5ruTvMgAPR5gAAAAAAAAAAAAAAAAAAbIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeO9fNkv/AG+0h7Dx3r5sl/7faQD2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/9k=" style="max-height:56px;max-width:150px;object-fit:contain;display:block"></div><div style="text-align:left"><div style="font-size:13px;font-weight:800;color:#1c2b3a;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e2ddd6">PRESUPUESTO</div><div style="display:flex;justify-content:flex-start;gap:8px;margin-bottom:2px"><span style="color:#9c9690;font-size:10px;min-width:55px">Obra:</span><span style="font-weight:600;font-size:11px;color:#1c2b3a">Casa CERO</span></div><div style="display:flex;justify-content:flex-start;gap:8px;margin-bottom:2px"><span style="color:#9c9690;font-size:10px;min-width:55px">Cliente:</span><span style="font-weight:600;font-size:11px;color:#1c2b3a">Felpaak</span></div><div style="display:flex;justify-content:flex-start;gap:8px;margin-bottom:2px"><span style="color:#9c9690;font-size:10px;min-width:55px">Localidad:</span><span style="font-weight:600;font-size:11px;color:#1c2b3a">Nuevo Bella Vista, Bella Vista</span></div><div style="display:flex;justify-content:flex-start;gap:8px;margin-top:4px"><span style="color:#9c9690;font-size:10px;min-width:55px">Emisión:</span><span style="font-weight:600;font-size:11px;color:#1c2b3a">24/4/2026</span></div></div></div></div><div id="pcli-content"><div class="metrics" style="grid-template-columns:repeat(3,1fr)">
+    <div class="met"><div class="met-l">Total mano de obra</div><div class="met-v" style="font-size:15px">$0</div></div>
+    <div class="met"><div class="met-l">Total materiales</div><div class="met-v" style="font-size:15px">$0</div></div>
+    <div class="met"><div class="met-l">Total presupuesto</div><div class="met-v g" style="font-size:18px">$0</div></div>
+  </div><div class="card"><div style="padding:9px 14px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:11px;color:var(--text2)"><strong>Casa CERO</strong> · Cliente: Felpaak · Bella Vista · IVA no incluye</div><div class="tw"><table><thead><tr><th style="width:26%">Descripción</th><th>Un.</th><th class="r">Cómputo</th><th class="r">PU MO</th><th class="r">PT MO</th><th class="r">PU Mat</th><th class="r">PT Mat</th><th class="r">PU cliente</th><th class="r">PT cliente</th><th class="r">IVA</th><th class="r">%</th><th class="no-print"></th></tr></thead><tbody><tr class="rubro-row"><td colspan="12">Preliminares de obra</td></tr><tr style="">
+      <td>Cartel de obra (chapa/estructura/madera/pintura)</td><td>gl</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(0)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(0)">×</button></td>
+    </tr><tr style="">
+      <td>Obrador, construcciones provisorias</td><td>gl</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(1)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(1)">×</button></td>
+    </tr><tr class="rubro-row"><td colspan="12">Estructuras</td></tr><tr style="">
+      <td>Pilotes diam:0,40 prof:6m</td><td>un</td>
+      <td class="r">42</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(2)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(2)">×</button></td>
+    </tr><tr style="">
+      <td>Cabezales pilotes 1,40x1,40</td><td>un</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(3)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(3)">×</button></td>
+    </tr><tr style="">
+      <td>Cabezales pilotes 1,40x0,60</td><td>un</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(4)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(4)">×</button></td>
+    </tr><tr style="">
+      <td>Vigas de encadenado - menores a 60cm</td><td>ml</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(5)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(5)">×</button></td>
+    </tr><tr style="">
+      <td>Columnas HA - menores a 60cm</td><td>ml</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(6)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(6)">×</button></td>
+    </tr><tr style="">
+      <td>Vigas aereas HA - Mayores a 60cm</td><td>ml</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(7)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(7)">×</button></td>
+    </tr><tr style="">
+      <td>Vigas aereas HA - Menores a 60cm</td><td>ml</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(8)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(8)">×</button></td>
+    </tr><tr style="">
+      <td>Tabiques HA</td><td>m2</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(9)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(9)">×</button></td>
+    </tr><tr style="">
+      <td>Losa HA vista</td><td>m2</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(10)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(10)">×</button></td>
+    </tr><tr class="rubro-row"><td colspan="12">Mampostería y tabiquería</td></tr><tr style="">
+      <td>Ladrillos huecos 08 en elevación</td><td>m2</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(11)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(11)">×</button></td>
+    </tr><tr style="">
+      <td>Ladrillos huecos 12 en elevación</td><td>m2</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(12)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(12)">×</button></td>
+    </tr><tr style="">
+      <td>Ladrillos huecos 18 en elevación</td><td>m2</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(13)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(13)">×</button></td>
+    </tr><tr style="">
+      <td>Ladrillos comunes en cimientos</td><td>m2</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(14)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(14)">×</button></td>
+    </tr><tr style="">
+      <td>Ladrillo visto - muro doble</td><td>m2</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(15)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(15)">×</button></td>
+    </tr><tr style="">
+      <td>Ladrillo visto - simple trabado</td><td>m2</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(16)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(16)">×</button></td>
+    </tr><tr class="rubro-row"><td colspan="12">Revoques</td></tr><tr style="">
+      <td>Azotado impermeable entre muro doble</td><td>m2</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(17)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(17)">×</button></td>
+    </tr><tr style="">
+      <td>Interior grueso y fino a la cal</td><td>m2</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(18)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(18)">×</button></td>
+    </tr><tr class="rubro-row"><td colspan="12">Contrapisos</td></tr><tr style="">
+      <td>HA sobre terreno natural e=12cm</td><td>m2</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(19)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(19)">×</button></td>
+    </tr><tr style="">
+      <td>Alivianado interior</td><td>m2</td>
+      <td class="r">1</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td><td class="r">$0</td>
+      <td class="r">$0</td>
+      <td class="r" style="font-weight:600">$0</td>
+      <td class="r" style="color:var(--text3)">$0</td>
+      <td class="r" style="color:var(--text2)">—</td>
+      <td class="r no-print" style="white-space:nowrap"><button class="btn btn-sm" onclick="editItem(20)">✎</button><button class="btn btn-sm btn-danger" onclick="deleteItem(20)">×</button></td>
+    </tr></tbody><tfoot><tr>
+    <td colspan="4">Total</td>
+    <td class="r">$0</td><td></td>
+    <td class="r">$0</td>
+    <td></td><td class="r">$0</td>
+    <td class="r" style="color:var(--text3)">$0</td>
+    <td class="r">100%</td><td class="no-print"></td>
+  </tr></tfoot></table></div></div></div></div>
   <div class="page" id="page-pcos"><div class="print-header" id="ph-pcos"></div><div id="pcos-content"></div></div>
   <div class="page" id="page-cert"><div class="print-header" id="ph-cert"></div><div id="cert-content"></div></div>
   <div class="page" id="page-hist"><div class="print-header" id="ph-hist"></div><div id="hist-content"></div></div>
@@ -1997,7 +2218,7 @@ function addItem(){
   document.getElementById('fi-sub').innerHTML='<option value="">—</option>'; document.getElementById('fi-desc-list').innerHTML='';
   document.getElementById('fi-un').value='m2'; document.getElementById('fi-qty').value=1; document.getElementById('fi-tipo').value='original';
   document.getElementById('fi-mo').value=0; document.getElementById('fi-mat').value=0; document.getElementById('fi-margen').value=30;
-  document.getElementById('fi-vu').value=0; document.getElementById('fi-iva-mo').value=0; document.getElementById('fi-iva-mat').value=21;
+  document.getElementById('fi-vu').value=0; document.getElementById('fi-iva-mo').value=0; document.getElementById('fi-iva-mat').value=0;
   document.getElementById('fi-costo').textContent='$0'; document.getElementById('fi-pu-calc').textContent='$0';
   if(obra.items){
     const pm=[...new Set(obra.items.map(it=>it.prov_mo).filter(Boolean))];
@@ -2078,9 +2299,7 @@ function renderPCli(){
   const totC=totMO+totMat;
   const totIVA=items.reduce((a,it)=>a+(it.qty*it.v_u*(it.iva_mat||0)/100),0);
 
-  let html=`<div class="metrics" style="grid-template-columns:repeat(3,1fr)">
-    <div class="met"><div class="met-l">Total mano de obra</div><div class="met-v" style="font-size:15px">$${fmt(totMO)}</div></div>
-    <div class="met"><div class="met-l">Total materiales</div><div class="met-v" style="font-size:15px">$${fmt(totMat)}</div></div>
+  let html=`<div class="metrics" style="grid-template-columns:repeat(1,1fr)">
     <div class="met"><div class="met-l">Total presupuesto</div><div class="met-v g" style="font-size:18px">$${fmt(totV)}</div></div>
   </div>`;
 
@@ -2096,9 +2315,7 @@ function renderPCli(){
 
   html+='<div class="card"><div style="padding:9px 14px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:11px;color:var(--text2)"><strong>'+obra.nombre+'</strong> · Cliente: '+(obra.cliente||'—')+' · '+(obra.localidad||'')+' · IVA no incluye</div>';
   html+='<div class="tw"><table><thead><tr>';
-  html+='<th style="width:26%">Descripción</th><th>Un.</th><th class="r">Cómputo</th>';
-  html+='<th class="r">PU MO</th><th class="r">PT MO</th>';
-  html+='<th class="r">PU Mat</th><th class="r">PT Mat</th>';
+  html+='<th style="width:36%">Descripción</th><th>Un.</th><th class="r">Cómputo</th>';
   html+='<th class="r">PU cliente</th><th class="r">PT cliente</th>';
   html+='<th class="r">IVA</th><th class="r">%</th><th class="no-print"></th>';
   html+='</tr></thead><tbody>';
@@ -2112,8 +2329,6 @@ function renderPCli(){
     html+=`<tr style="${tipoRowStyle(it.tipo)}">
       <td>${tipoBadge(it.tipo)}${it.desc}</td><td>${it.un}</td>
       <td class="r">${it.qty%1===0?it.qty:it.qty.toFixed(2)}</td>
-      <td class="r">$${fmt(it.mo_u||0)}</td><td class="r">$${fmt(ptMO)}</td>
-      <td class="r">$${fmt(it.mat_u||0)}</td><td class="r">$${fmt(ptMat)}</td>
       <td class="r">$${fmt(it.v_u)}</td>
       <td class="r" style="font-weight:600">$${fmt(ptV)}</td>
       <td class="r" style="color:${iva>0?'var(--amber)':'var(--text3)'}">$${fmt(iva)}</td>
@@ -2360,7 +2575,7 @@ function renderCert(){
         <td class="r" style="font-weight:700;color:var(--green)">$${fmt(monto)}</td>
         <td class="r" style="color:var(--text2)">$${fmt(saldo)}</td></tr>`;
     });
-    html+=`</tbody><tfoot><tr><td colspan="6">Subtotal</td><td class="r" style="font-weight:700">$${fmt(totMes)}</td><td></td></tr></tfoot></table></div></div>`;
+    html+=`</tbody><tfoot><tr><td colspan="4">Subtotal</td><td class="r" style="font-weight:700">$${fmt(totMes)}</td><td></td></tr></tfoot></table></div></div>`;
 
     // CAC block
     html+=`<div class="card" style="margin-top:12px"><div class="card-head"><h3>Ajuste índice CAC</h3><span style="font-size:11px;color:var(--text2)">Uso interno — para calcular el total ajustado</span></div>
@@ -3003,5 +3218,5 @@ if(!STATE.obras.length){
 }
 
 </script>
-</body>
-</html>
+
+</body></html>
