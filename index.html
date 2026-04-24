@@ -179,6 +179,139 @@ input.inp-av{width:64px;text-align:right;background:#fffbf0;border-color:#e8c97a
 </head>
 <body>
 
+<!-- MODAL OBRA -->
+<div class="modal-ov hide" id="modal-obra">
+<div class="modal" style="width:580px">
+  <h3 id="mo-title">Nueva obra</h3>
+  <div class="fsec">
+    <div class="fsec-t">Datos de la obra</div>
+    <div class="f2">
+      <div class="fr"><label>Nombre de la obra *</label><input type="text" id="fo-nombre" placeholder="Ej: Casa García"></div>
+      <div class="fr"><label>Cliente *</label><input type="text" id="fo-cliente" placeholder="Nombre del cliente"></div>
+    </div>
+    <div class="f3">
+      <div class="fr"><label>Dirección</label><input type="text" id="fo-dir" placeholder="Calle y número"></div>
+      <div class="fr"><label>Barrio</label><input type="text" id="fo-barrio" placeholder="Barrio"></div>
+      <div class="fr"><label>Localidad</label><input type="text" id="fo-loc" placeholder="Localidad"></div>
+    </div>
+    <div class="f3">
+      <div class="fr"><label>Provincia</label><input type="text" id="fo-prov" placeholder="Provincia"></div>
+      <div class="fr"><label>Fecha inicio</label><input type="date" id="fo-fecha"></div>
+      <div class="fr"><label>Plazo (meses)</label><input type="number" id="fo-plazo" min="1" placeholder="12"></div>
+    </div>
+    <div class="f2">
+      <div class="fr"><label>Superficie m²</label><input type="number" id="fo-m2" min="0" placeholder="0"></div>
+      <div class="fr"><label>Notas</label><input type="text" id="fo-notas" placeholder="Observaciones"></div>
+    </div>
+  </div>
+  <div class="modal-act">
+    <button class="btn" onclick="closeM('modal-obra')">Cancelar</button>
+    <button class="btn btn-gold" onclick="saveObra()">Guardar obra</button>
+  </div>
+</div>
+</div>
+
+<!-- MODAL ITEM -->
+<div class="modal-ov hide" id="modal-item">
+<div class="modal" style="width:640px;max-height:90vh;overflow-y:auto">
+  <h3 id="mi-title">Agregar ítem</h3>
+  <div class="fsec">
+    <div class="fsec-t">Rubro y descripción</div>
+    <div class="f2">
+      <div class="fr"><label>Rubro</label><select id="fi-rubro" onchange="filterSubs()"></select></div>
+      <div class="fr"><label>Subrubro</label><select id="fi-sub" onchange="onSubSel(this.value)"></select></div>
+    </div>
+    <div class="f2">
+      <div class="fr"><label>Descripción *</label><input type="text" id="fi-desc" placeholder="Descripción del ítem"></div>
+      <div class="fr"><label>Unidad</label><input type="text" id="fi-un" placeholder="m2, ml, gl, un..."></div>
+    </div>
+    <div class="f2">
+      <div class="fr"><label>Tipo</label>
+        <select id="fi-tipo">
+          <option value="original">Original</option>
+          <option value="adicional">Adicional</option>
+          <option value="ajuste">Ajuste de cómputo</option>
+        </select>
+      </div>
+      <div class="fr"><label>Cómputo (qty)</label><input type="number" id="fi-qty" min="0" step="0.01" value="1"></div>
+    </div>
+  </div>
+  <div class="fsec">
+    <div class="fsec-t">Costos</div>
+    <div class="f3">
+      <div class="fr"><label>MO unitaria ($)</label><input type="number" id="fi-mo" min="0" value="0" oninput="calcPU()"></div>
+      <div class="fr"><label>Material unitario ($)</label><input type="number" id="fi-mat" min="0" value="0" oninput="calcPU()"></div>
+      <div class="fr"><label>Margen (%)</label><input type="number" id="fi-mg" min="0" max="100" value="0" oninput="calcPU()"></div>
+    </div>
+    <div class="f3">
+      <div class="fr"><label>IVA MO (%)</label><input type="number" id="fi-iva-mo" min="0" value="0"></div>
+      <div class="fr"><label>IVA Material (%)</label><input type="number" id="fi-iva-mat" min="0" value="0"></div>
+      <div class="fr"><label>PU cliente ($)</label><input type="number" id="fi-vu" min="0" value="0" oninput="calcMargen()"></div>
+    </div>
+    <div style="display:flex;gap:16px;padding:8px 0;font-size:12px;color:var(--text2)">
+      <span>Costo: <strong id="fi-costo">$0</strong></span>
+      <span>PU calculado: <strong id="fi-pu-calc">$0</strong></span>
+    </div>
+  </div>
+  <div class="fsec">
+    <div class="fsec-t">Proveedores</div>
+    <div class="f2">
+      <div class="fr"><label>Proveedor MO</label>
+        <input type="text" id="fi-prov-mo" list="fi-prov-mo-list" placeholder="Proveedor mano de obra" autocomplete="off">
+        <datalist id="fi-prov-mo-list"></datalist>
+      </div>
+      <div class="fr"><label>Proveedor materiales</label>
+        <input type="text" id="fi-prov-mat" list="fi-prov-mat-list" placeholder="Proveedor materiales" autocomplete="off">
+        <datalist id="fi-prov-mat-list"></datalist>
+      </div>
+    </div>
+  </div>
+  <div class="modal-act">
+    <button class="btn" onclick="closeM('modal-item')">Cancelar</button>
+    <button class="btn" onclick="saveItem(true)">Guardar y agregar otro</button>
+    <button class="btn btn-gold" onclick="saveItem()">Guardar ítem</button>
+  </div>
+</div>
+</div>
+
+<!-- MODAL GANTT TAREA -->
+<div class="modal-ov hide" id="modal-gantt">
+<div class="modal" style="width:500px">
+  <h3 id="mgt-title">Agregar tarea al Gantt</h3>
+  <div class="fsec">
+    <div class="fsec-t">Identificación</div>
+    <div class="f2">
+      <div class="fr"><label>Nombre de la tarea *</label><input type="text" id="gt-nombre" placeholder="Ej: Excavación"></div>
+      <div class="fr"><label>Rubro</label><input type="text" id="gt-rubro" placeholder="Rubro" list="gt-rubro-list"><datalist id="gt-rubro-list"></datalist></div>
+    </div>
+  </div>
+  <div class="fsec">
+    <div class="fsec-t">Fechas</div>
+    <div class="f2">
+      <div class="fr"><label>Inicio</label><input type="date" id="gt-inicio"></div>
+      <div class="fr"><label>Fin</label><input type="date" id="gt-fin"></div>
+    </div>
+    <div class="f2">
+      <div class="fr"><label>Estado</label>
+        <select id="gt-estado">
+          <option value="pendiente">Pendiente</option>
+          <option value="en-curso">En curso</option>
+          <option value="completada">Completada</option>
+          <option value="demorada">Demorada</option>
+        </select>
+      </div>
+      <div class="fr"><label>Depende de (ID)</label><input type="text" id="gt-dep" placeholder="ID de tarea anterior"></div>
+    </div>
+    <div class="fr"><label>Notas</label><textarea id="gt-notas" rows="2"></textarea></div>
+  </div>
+  <div class="modal-act">
+    <button class="btn" onclick="closeM('modal-gantt')">Cancelar</button>
+    <button class="btn btn-gold" onclick="saveGTask()">Guardar tarea</button>
+  </div>
+</div>
+</div>
+
+
 <!-- MODAL MOVIMIENTO -->
 <div class="modal-ov hide" id="modal-mov">
 <div class="modal" style="width:600px;max-height:90vh;overflow-y:auto">
@@ -248,7 +381,7 @@ input.inp-av{width:64px;text-align:right;background:#fffbf0;border-color:#e8c97a
     <div class="fr"><label>Notas</label><textarea id="mm-notas" rows="2" placeholder="Observaciones adicionales..."></textarea></div>
   </div>
   <div class="modal-act">
-    <button class="btn" onclick="closeM(&#39;modal-mov&#39;)">Cancelar</button>
+    <button class="btn" onclick="closeM('modal-mov')">Cancelar</button>
     <button class="btn btn-gold" onclick="saveMov()">Guardar</button>
   </div>
 </div>
@@ -278,7 +411,7 @@ input.inp-av{width:64px;text-align:right;background:#fffbf0;border-color:#e8c97a
     </div>
   </div>
   <div class="modal-act">
-    <button class="btn" onclick="closeM(&#39;modal-cuenta&#39;)">Cancelar</button>
+    <button class="btn" onclick="closeM('modal-cuenta')">Cancelar</button>
     <button class="btn btn-gold" onclick="saveCuenta()">Guardar</button>
   </div>
 </div>
@@ -336,7 +469,7 @@ input.inp-av{width:64px;text-align:right;background:#fffbf0;border-color:#e8c97a
     <div class="fr"><label>Notas</label><textarea id="gt-notas" rows="2"></textarea></div>
   </div>
   <div class="modal-act">
-    <button class="btn" onclick="closeM(&#39;modal-gtask&#39;)">Cancelar</button>
+    <button class="btn" onclick="closeM('modal-gtask')">Cancelar</button>
     <button class="btn btn-gold" onclick="saveGTask()">Guardar tarea</button>
   </div>
 </div>
@@ -352,26 +485,26 @@ input.inp-av{width:64px;text-align:right;background:#fffbf0;border-color:#e8c97a
     <button class="sb-new-obra" onclick="openModalObra()">+ Nueva obra</button>
   </div>
   <div class="sb-sec">Presupuesto</div>
-  <button class="nav on" onclick="go(&#39;pcli&#39;)" id="nav-pcli"><span class="nav-dot"></span>Para el cliente</button>
-  <button class="nav" onclick="go(&#39;pcos&#39;)" id="nav-pcos"><span class="nav-dot"></span>Costos internos</button>
+  <button class="nav on" onclick="go('pcli')" id="nav-pcli"><span class="nav-dot"></span>Para el cliente</button>
+  <button class="nav" onclick="go('pcos')" id="nav-pcos"><span class="nav-dot"></span>Costos internos</button>
   <div class="sb-sec">Certificación</div>
-  <button class="nav" onclick="go(&#39;cert&#39;)" id="nav-cert"><span class="nav-dot"></span>Certificado</button>
-  <button class="nav" onclick="go(&#39;hist&#39;)" id="nav-hist"><span class="nav-dot"></span>Historial</button>
+  <button class="nav" onclick="go('cert')" id="nav-cert"><span class="nav-dot"></span>Certificado</button>
+  <button class="nav" onclick="go('hist')" id="nav-hist"><span class="nav-dot"></span>Historial</button>
   <div class="sb-sec">Planificación</div>
-  <button class="nav" onclick="go(&#39;gantt&#39;)" id="nav-gantt"><span class="nav-dot"></span>Gantt</button>
-  <button class="nav" onclick="go(&#39;cashflow&#39;)" id="nav-cashflow"><span class="nav-dot"></span>Cashflow</button>
+  <button class="nav" onclick="go('gantt')" id="nav-gantt"><span class="nav-dot"></span>Gantt</button>
+  <button class="nav" onclick="go('cashflow')" id="nav-cashflow"><span class="nav-dot"></span>Cashflow</button>
   <div class="sb-sec">Herramientas</div>
-  <button class="nav" onclick="go(&#39;mat&#39;)" id="nav-mat"><span class="nav-dot"></span>Calc. materiales</button>
+  <button class="nav" onclick="go('mat')" id="nav-mat"><span class="nav-dot"></span>Calc. materiales</button>
   <div class="sb-sec">Sistema</div>
-  <button class="nav" onclick="go(&#39;config&#39;)" id="nav-config"><span class="nav-dot"></span>Configuración</button>
-  <button class="nav" onclick="go(&#39;finanzas&#39;)" id="nav-finanzas"><span class="nav-dot"></span>Finanzas</button>
-  <button class="nav nav-admin-only" onclick="go(&#39;usuarios&#39;)" id="nav-usuarios"><span class="nav-dot"></span>Usuarios</button>
+  <button class="nav" onclick="go('config')" id="nav-config"><span class="nav-dot"></span>Configuración</button>
+  <button class="nav" onclick="go('finanzas')" id="nav-finanzas"><span class="nav-dot"></span>Finanzas</button>
+  <button class="nav nav-admin-only" onclick="go('usuarios')" id="nav-usuarios"><span class="nav-dot"></span>Usuarios</button>
 </div>
 
 <div class="main">
 <div class="topbar no-print">
   <h2 id="tb-title">Para el cliente</h2>
-  <div style="display:flex;gap:7px;align-items:center" id="tb-actions"><button class="btn" onclick="addItem()">+ Agregar ítem</button><button class="btn btn-gold" onclick="printDoc(&#39;pcli&#39;)">Exportar PDF</button></div>
+  <div style="display:flex;gap:7px;align-items:center" id="tb-actions"><button class="btn" onclick="addItem()">+ Agregar ítem</button><button class="btn btn-gold" onclick="printDoc('pcli')">Exportar PDF</button></div>
   <div style="display:flex;gap:7px;align-items:center;margin-left:12px" id="user-badge"></div>
 </div>
 <div class="content">
@@ -2299,7 +2432,9 @@ function renderPCli(){
   const totC=totMO+totMat;
   const totIVA=items.reduce((a,it)=>a+(it.qty*it.v_u*(it.iva_mat||0)/100),0);
 
-  let html=`<div class="metrics" style="grid-template-columns:repeat(1,1fr)">
+  let html=`<div class="metrics" style="grid-template-columns:repeat(3,1fr)">
+    <div class="met"><div class="met-l">Total mano de obra</div><div class="met-v" style="font-size:15px">$${fmt(totMO)}</div></div>
+    <div class="met"><div class="met-l">Total materiales</div><div class="met-v" style="font-size:15px">$${fmt(totMat)}</div></div>
     <div class="met"><div class="met-l">Total presupuesto</div><div class="met-v g" style="font-size:18px">$${fmt(totV)}</div></div>
   </div>`;
 
@@ -2315,7 +2450,9 @@ function renderPCli(){
 
   html+='<div class="card"><div style="padding:9px 14px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:11px;color:var(--text2)"><strong>'+obra.nombre+'</strong> · Cliente: '+(obra.cliente||'—')+' · '+(obra.localidad||'')+' · IVA no incluye</div>';
   html+='<div class="tw"><table><thead><tr>';
-  html+='<th style="width:36%">Descripción</th><th>Un.</th><th class="r">Cómputo</th>';
+  html+='<th style="width:22%">Descripción</th><th>Un.</th><th class="r">Cómputo</th>';
+  html+='<th class="r">PU MO</th><th class="r">PT MO</th>';
+  html+='<th class="r">PU Mat</th><th class="r">PT Mat</th>';
   html+='<th class="r">PU cliente</th><th class="r">PT cliente</th>';
   html+='<th class="r">IVA</th><th class="r">%</th><th class="no-print"></th>';
   html+='</tr></thead><tbody>';
@@ -2329,6 +2466,8 @@ function renderPCli(){
     html+=`<tr style="${tipoRowStyle(it.tipo)}">
       <td>${tipoBadge(it.tipo)}${it.desc}</td><td>${it.un}</td>
       <td class="r">${it.qty%1===0?it.qty:it.qty.toFixed(2)}</td>
+      <td class="r">$${fmt(it.mo_u||0)}</td><td class="r">$${fmt(ptMO)}</td>
+      <td class="r">$${fmt(it.mat_u||0)}</td><td class="r">$${fmt(ptMat)}</td>
       <td class="r">$${fmt(it.v_u)}</td>
       <td class="r" style="font-weight:600">$${fmt(ptV)}</td>
       <td class="r" style="color:${iva>0?'var(--amber)':'var(--text3)'}">$${fmt(iva)}</td>
