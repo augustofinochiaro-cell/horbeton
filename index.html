@@ -421,7 +421,7 @@ input.inp-av{width:64px;text-align:right;background:#fffbf0;border-color:#e8c97a
     </div>
     <div class="f2">
       <div class="fr"><label>IVA en MO (%)</label><input type="number" id="fi-iva-mo" value="0" min="0" max="100" step="0.5"></div>
-      <div class="fr"><label>IVA en materiales (%)</label><input type="number" id="fi-iva-mat" value="21" min="0" max="100" step="0.5"></div>
+      <div class="fr"><label>IVA en materiales (%)</label><input type="number" id="fi-iva-mat" value="0" min="0" max="100" step="0.5"></div>
     </div>
   </div>
   <div class="modal-act">
@@ -2124,7 +2124,7 @@ function addItem(){
   document.getElementById('fi-sub').innerHTML='<option value="">—</option>'; document.getElementById('fi-desc-list').innerHTML='';
   document.getElementById('fi-un').value='m2'; document.getElementById('fi-qty').value=1; document.getElementById('fi-tipo').value='original';
   document.getElementById('fi-mo').value=0; document.getElementById('fi-mat').value=0; document.getElementById('fi-margen').value=30;
-  document.getElementById('fi-vu').value=0; document.getElementById('fi-iva-mo').value=0; document.getElementById('fi-iva-mat').value=21;
+  document.getElementById('fi-vu').value=0; document.getElementById('fi-iva-mo').value=0; document.getElementById('fi-iva-mat').value=0;
   document.getElementById('fi-costo').textContent='$0'; document.getElementById('fi-pu-calc').textContent='$0';
   if(obra.items){
     const pm=[...new Set(obra.items.map(it=>it.prov_mo).filter(Boolean))];
@@ -2163,7 +2163,7 @@ function saveItem(keepOpen){
     document.getElementById('fi-mat').value=0;
     document.getElementById('fi-vu').value=0;
     document.getElementById('fi-iva-mo').value=0;
-    document.getElementById('fi-iva-mat').value=21;
+    document.getElementById('fi-iva-mat').value=0;
     document.getElementById('fi-costo').textContent='$0';
     document.getElementById('fi-pu-calc').textContent='$0';
     document.getElementById('mi-title').textContent='Agregar otro ítem — '+document.getElementById('fi-rubro').options[document.getElementById('fi-rubro').selectedIndex]?.text?.split('|')[1]?.trim()||'';
@@ -2181,7 +2181,7 @@ function editItem(idx){
   document.getElementById('fi-qty').value=it.qty; document.getElementById('fi-tipo').value=it.tipo||'original';
   document.getElementById('fi-mo').value=it.mo_u; document.getElementById('fi-mat').value=it.mat_u;
   document.getElementById('fi-margen').value=it.margen||30; document.getElementById('fi-vu').value=it.v_u;
-  document.getElementById('fi-iva-mo').value=it.iva_mo??0; document.getElementById('fi-iva-mat').value=it.iva_mat??21;
+  document.getElementById('fi-iva-mo').value=it.iva_mo??0; document.getElementById('fi-iva-mat').value=it.iva_mat??0;
   document.getElementById('fi-prov-mo').value=it.prov_mo||''; document.getElementById('fi-prov-mat').value=it.prov_mat||'';
   document.getElementById('fi-costo').textContent='$'+fmt((it.mo_u||0)+(it.mat_u||0));
   document.getElementById('fi-pu-calc').textContent='$'+fmt(it.v_u||0);
@@ -2224,8 +2224,10 @@ function renderPCli(){
   const totC=totMO+totMat;
   const totIVA=items.reduce((a,it)=>a+(it.qty*it.v_u*(it.iva_mat||0)/100),0);
 
-  let html=`<div class="metrics" style="grid-template-columns:repeat(1,1fr)">
-    <div class="met"><div class="met-l">Total presupuesto</div><div class="met-v g" style="font-size:18px">$${fmt(totV)}</div></div>
+  let html=`<div class="metrics" style="grid-template-columns:repeat(3,1fr)">
+    <div class="met"><div class="met-l">Total MO</div><div class="met-v" style="font-size:15px">$${fmt(totMO)}</div></div>
+    <div class="met"><div class="met-l">Total materiales</div><div class="met-v" style="font-size:15px">$${fmt(totMat)}</div></div>
+    <div class="met"><div class="met-l">Total presupuesto</div><div class="met-v g">$${fmt(totV)}</div></div>
   </div>`;
 
   // Summary breakdown if adicionales/ajustes
@@ -2241,6 +2243,8 @@ function renderPCli(){
   html+='<div class="card"><div style="padding:9px 14px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:11px;color:var(--text2)"><strong>'+obra.nombre+'</strong> · Cliente: '+(obra.cliente||'—')+' · '+(obra.localidad||'')+' · IVA no incluye</div>';
   html+='<div class="tw"><table><thead><tr>';
   html+='<th style="width:26%">Descripción</th><th>Un.</th><th class="r">Cómputo</th>';
+  html+='<th class="r">PU MO</th><th class="r">PT MO</th>';
+  html+='<th class="r">PU Mat</th><th class="r">PT Mat</th>';
   html+='<th class="r">PU cliente</th><th class="r">PT cliente</th>';
   html+='<th class="r">IVA</th><th class="r">%</th><th class="no-print"></th>';
   html+='</tr></thead><tbody>';
@@ -2255,6 +2259,10 @@ function renderPCli(){
     html+=`<tr style="${tipoRowStyle(it.tipo)}">
       <td>${tipoBadge(it.tipo)}${it.desc}</td><td>${it.un}</td>
       <td class="r"><input type="number" value="${it.qty}" min="0" step="0.01" style="${inpCli}" onchange="inlineEditPcli(${i},'qty',this.value)" title="Cómputo"></td>
+      <td class="r"><input type="number" value="${it.mo_u||0}" min="0" style="${inpCli}" onchange="inlineEditPcli(${i},'mo_u',this.value)" title="PU MO"></td>
+      <td class="r">$${fmt(it.qty*(it.mo_u||0))}</td>
+      <td class="r"><input type="number" value="${it.mat_u||0}" min="0" style="${inpCli}" onchange="inlineEditPcli(${i},'mat_u',this.value)" title="PU Mat"></td>
+      <td class="r">$${fmt(it.qty*(it.mat_u||0))}</td>
       <td class="r"><input type="number" value="${it.v_u}" min="0" style="${inpCli}" onchange="inlineEditPcli(${i},'v_u',this.value)" title="PU cliente"></td>
       <td class="r" style="font-weight:600">$${fmt(ptV)}</td>
       <td class="r" style="color:${iva>0?'var(--amber)':'var(--text3)'}">$${fmt(iva)}</td>
